@@ -1,6 +1,7 @@
 package main
 
 import (
+	"compress/gzip"
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/json"
@@ -84,7 +85,10 @@ func copyRequestHeaders(destination, source http.Header) {
 func copyResponseHeaders(destination, source http.Header) {
 	for name, values := range source {
 		lowerName := strings.ToLower(name)
-		if strippedHeaders[lowerName] || strippedResponseHeaders[lowerName] {
+		if (strippedHeaders[lowerName] && lowerName != "content-length") || strippedResponseHeaders[lowerName] {
+			continue
+		}
+		if lowerName == "content-length" && source.Get("Content-Encoding") != "" {
 			continue
 		}
 		destination[name] = append([]string(nil), values...)
@@ -111,9 +115,19 @@ func proxyRequest(writer http.ResponseWriter, request *http.Request, config Conf
 		return
 	}
 	defer upstreamResponse.Body.Close()
+	responseBody := upstreamResponse.Body
+	if request.Method != http.MethodHead && strings.EqualFold(upstreamResponse.Header.Get("Content-Encoding"), "gzip") {
+		decodedBody, decodeErr := gzip.NewReader(upstreamResponse.Body)
+		if decodeErr != nil {
+			writeJSON(writer, http.StatusBadGateway, map[string]string{"error": "Bad gateway"})
+			return
+		}
+		defer decodedBody.Close()
+		responseBody = decodedBody
+	}
 	copyResponseHeaders(writer.Header(), upstreamResponse.Header)
 	writer.WriteHeader(upstreamResponse.StatusCode)
-	copyStreaming(writer, upstreamResponse.Body, config.IdleTimeout)
+	copyStreaming(writer, responseBody, config.IdleTimeout)
 }
 
 func copyStreaming(writer http.ResponseWriter, source io.ReadCloser, idleTimeout time.Duration) {

@@ -3,7 +3,7 @@ id: e01
 title: Behavior-identical Go proxy
 wsjf: 8.0
 total_bcps: 30
-status: planning
+status: done
 bump_hint: patch
 notes:
   - Ten stories follow the approved one-commit-per-step port order.
@@ -12,60 +12,60 @@ stories:
   - id: e01s01
     title: Parse and validate configuration
     bcps: 3
-    status: todo
+    status: done
     spec: e01s01-configuration.md
     tasks: e01s01-configuration-tasks.yaml
   - id: e01s02
     title: Serve health and local errors
     bcps: 3
-    status: todo
+    status: done
     spec: e01s02-health-errors.md
     tasks: e01s02-health-errors-tasks.yaml
   - id: e01s03
     title: Authenticate and route requests
     bcps: 3
-    status: todo
+    status: done
     spec: e01s03-routing-auth.md
     tasks: e01s03-routing-auth-tasks.yaml
   - id: e01s04
     title: Stream upstream bodies
     bcps: 3
-    status: todo
+    status: done
     spec: e01s04-streaming.md
     tasks: e01s04-streaming-tasks.yaml
   - id: e01s05
     title: Enforce connect timeout
     bcps: 3
-    status: todo
+    status: done
     spec: e01s05-connect-timeout.md
     tasks: e01s05-connect-timeout-tasks.yaml
   - id: e01s06
     title: Enforce idle timeout
     bcps: 4
-    status: todo
+    status: done
     spec: e01s06-idle-timeout.md
     tasks: e01s06-idle-timeout-tasks.yaml
   - id: e01s07
     title: Cancel upstream on client disconnect
     bcps: 3
-    status: todo
+    status: done
     spec: e01s07-cancellation.md
     tasks: e01s07-cancellation-tasks.yaml
   - id: e01s08
     title: Copy headers without transport leakage
     bcps: 3
-    status: todo
+    status: done
     spec: e01s08-headers.md
     tasks: e01s08-headers-tasks.yaml
   - id: e01s09
     title: Shut down on SIGTERM
     bcps: 2
-    status: todo
+    status: done
     spec: e01s09-shutdown.md
     tasks: e01s09-shutdown-tasks.yaml
   - id: e01s10
     title: Port and verify all parity tests
     bcps: 3
-    status: todo
+    status: done
     spec: e01s10-parity-tests.md
     tasks: e01s10-parity-tests-tasks.yaml
