@@ -5,7 +5,7 @@ session:
   active_flow: build_epic
   started_at: '2026-09-24T14:08:26+07:00'
   handoff:
-    last_step_completed: e01s05 connect timeout test passed
+    last_step_completed: e01s06 idle timeout tests passed
     open_decisions: []
     required_reading:
       - CONVENTIONS.md
@@ -15,15 +15,15 @@ session:
 vcs:
   kind: git
   branch: feat/parity-port
-  hash: 2add2ff
+  hash: 04c226e
 release:
   target_version: null
   last_tag: null
   last_publish: null
 active_epic: e01
-active_story: e01s06
+active_story: e01s07
 metrics:
-  story_start: '2026-09-24T14:18:00+07:00'
+  story_start: '2026-09-24T14:20:00+07:00'
   story_end: null
   cycle_minutes: null
   bcp_per_hour: null

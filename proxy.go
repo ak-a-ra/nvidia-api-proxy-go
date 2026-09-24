@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func NewHandler(config Config) http.Handler {
@@ -76,11 +77,18 @@ func proxyRequest(writer http.ResponseWriter, request *http.Request, config Conf
 		writer.Header()[name] = append([]string(nil), values...)
 	}
 	writer.WriteHeader(upstreamResponse.StatusCode)
-	copyStreaming(writer, upstreamResponse.Body)
+	copyStreaming(writer, upstreamResponse.Body, config.IdleTimeout)
 }
 
-func copyStreaming(writer http.ResponseWriter, source io.Reader) {
+func copyStreaming(writer http.ResponseWriter, source io.ReadCloser, idleTimeout time.Duration) {
 	flusher, canFlush := writer.(http.Flusher)
+	var idleTimer *time.Timer
+	if idleTimeout > 0 {
+		idleTimer = time.AfterFunc(idleTimeout, func() {
+			_ = source.Close()
+		})
+		defer idleTimer.Stop()
+	}
 	buffer := make([]byte, 32*1024)
 	for {
 		count, err := source.Read(buffer)
@@ -88,6 +96,9 @@ func copyStreaming(writer http.ResponseWriter, source io.Reader) {
 			_, _ = writer.Write(buffer[:count])
 			if canFlush {
 				flusher.Flush()
+			}
+			if idleTimer != nil {
+				idleTimer.Reset(idleTimeout)
 			}
 		}
 		if err == io.EOF {
