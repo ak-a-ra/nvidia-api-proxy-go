@@ -5,17 +5,18 @@ session:
   active_flow: build_epic
   started_at: '2026-09-24T14:08:26+07:00'
   handoff:
-    last_step_completed: all 34 parity tests and full Preflight passed
-    open_decisions: []
+    last_step_completed: verify-work evidence persisted; automated UAT passed
+    open_decisions:
+      - User manual UAT confirmation was unavailable.
     required_reading:
       - CONVENTIONS.md
       - specs/product/SCOPE_LATEST.yaml
       - specs/epics/e01-parity-port/epic.yaml
-    next_skill: verify-work
+    next_skill: audit-code
 vcs:
   kind: git
   branch: feat/parity-port
-  hash: a1b50cf
+  hash: e245755
 release:
   target_version: null
   last_tag: null

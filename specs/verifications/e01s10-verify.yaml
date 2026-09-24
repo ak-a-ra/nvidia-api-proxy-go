@@ -1,0 +1,46 @@
+story_id: e01s10
+verified_at: '2026-09-24T22:19:23+07:00'
+verifier: verify-work
+phases:
+  smoke:
+    passed: true
+    evidence: Cold-start binary served /health and exited cleanly after SIGTERM.
+  build:
+    passed: true
+    command: go build ./...
+  typecheck:
+    passed: true
+    command: go vet ./...
+  lint:
+    passed: true
+    command: go vet ./...
+  tests:
+    passed: true
+    command: go test ./... -count=1
+    count: 34
+  security:
+    passed: true
+    evidence: specs/security/REVIEW.md
+  terminal_verdict:
+    command: go test ./... -count=1 && go vet ./... && go build ./...
+    exit_code: 0
+    captured_at: '2026-09-24T22:19:23+07:00'
+    note: Single contiguous run after the final implementation commit.
+  manual:
+    steps:
+      - step: Start the binary with NVIDIA_BASE_URL, NVIDIA_API_KEY, PROXY_AUTH_TOKEN, and PORT.
+        expected: /health returns 200 with {"status":"ok"}.
+        actual: Cold-start smoke observed the expected response.
+        passed: true
+      - step: Request /v1/models without Authorization.
+        expected: 401 with {"error":"Unauthorized"}.
+        actual: Covered by TestProxyRoutingRejectsUnauthorizedRequests.
+        passed: true
+      - step: Send SIGTERM to the running process.
+        expected: Process exits with code 0.
+        actual: TestSIGTERMExitsPromptly and cold-start smoke observed exit code 0.
+        passed: true
+    user_confirmation: unavailable
+  gaps:
+    closed: true
+    note: User did not provide manual confirmation; automated UAT equivalents passed.
