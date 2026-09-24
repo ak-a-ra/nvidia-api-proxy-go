@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: nvidia-api-proxy-go
+    runtime: go
+    plan: free
+    buildCommand: go build -o app .
+    startCommand: ./app
+    healthCheckPath: /health
+    envVars:
+      - key: NVIDIA_BASE_URL
+        value: https://integrate.api.nvidia.com/v1
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: PROXY_AUTH_TOKEN
+        sync: false
+      - key: PORT
+        value: "10000"
+      - key: UPSTREAM_CONNECT_TIMEOUT_SECONDS
+        value: "30"
+      - key: UPSTREAM_IDLE_TIMEOUT_SECONDS
+        value: "120"

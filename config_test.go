@@ -72,3 +72,16 @@ func TestLoadConfigTimeoutValues(t *testing.T) {
 		t.Fatalf("IdleTimeout = %s, want 120s", config.IdleTimeout)
 	}
 }
+
+func TestTimeoutEnvWhitespaceFallsBackToDefaults(t *testing.T) {
+	t.Setenv("NVIDIA_BASE_URL", "http://127.0.0.1:8080")
+	t.Setenv("UPSTREAM_CONNECT_TIMEOUT_SECONDS", "")
+	t.Setenv("UPSTREAM_IDLE_TIMEOUT_SECONDS", "   ")
+	config, err := LoadConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if config.ConnectTimeout != 30*time.Second || config.IdleTimeout != 120*time.Second {
+		t.Fatalf("timeouts = %s, %s", config.ConnectTimeout, config.IdleTimeout)
+	}
+}
