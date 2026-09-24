@@ -1,0 +1,16 @@
+story_id: e01s09
+title: Shut down on SIGTERM
+status: failing
+bcps: 2
+risk: P1
+security: low
+tasks:
+  - id: 1
+    description: Add signal handling, bounded graceful shutdown, and subprocess lifecycle coverage.
+    verify: go test ./... -run TestShutdown
+    status: failing
+    allure:
+      severity: high
+      categories:
+        - lifecycle
+        - integration

@@ -1,0 +1,82 @@
+schema_version: 1
+status: refined
+project: nvidia-api-proxy-go
+core_value: >-
+  Replace the Node.js NVIDIA API proxy with a small Go service without changing
+  its observable HTTP behavior.
+summary: >-
+  The Go service must preserve the original proxy's public endpoints, environment
+  variables, response bodies, headers, streaming behavior, timeout semantics,
+  cancellation behavior, and shutdown contract. The original server.js and
+  server.test.js are the behavior authority.
+summary_details: >-
+  The port is a compatibility rewrite, not a redesign. The implementation stays
+  within the Go standard library and must not add retries, rate limiting, or
+  new response behavior during parity work.
+source_of_truth:
+  original_implementation: nvidia-api-proxy/server.js
+  original_tests: nvidia-api-proxy/server.test.js
+in_scope:
+  - id: e01s01
+    description: Parse configuration, apply defaults, and reject an invalid NVIDIA_BASE_URL.
+  - id: e01s02
+    description: Serve the health contract and exact generated error responses.
+  - id: e01s03
+    description: Authenticate and route requests under /v1/* while preserving paths and queries.
+  - id: e01s04
+    description: Forward request and response bodies with streaming semantics.
+  - id: e01s05
+    description: Bound upstream first-response time with configurable timeout behavior.
+  - id: e01s06
+    description: Bound upstream idle time and reset the bound on every received chunk.
+  - id: e01s07
+    description: Cancel upstream work when the client disconnects.
+  - id: e01s08
+    description: Strip hop-by-hop headers and preserve multi-value response cookies.
+  - id: e01s09
+    description: Shut down gracefully on SIGTERM without abandoning active work.
+  - id: e01s10
+    description: Port all 34 original server tests and add explicit parity evidence.
+out_of_scope:
+  - item: Web frameworks or third-party dependencies
+    reason: The behavior contract and project philosophy require a standard-library-only port.
+  - item: Behavior improvements during the parity port
+    reason: Any intentional change requires a separate approved change request.
+  - item: Automatic retries or rate limiting
+    reason: These alter failure behavior and have no opt-in requirement.
+  - item: Performance optimization or redesign
+    reason: Parity is the release gate; optimization follows separately.
+operational_constraints:
+  runtime: Go 1.24+
+  dependencies: standard library only
+  module: nvidia-api-proxy-go
+  deployment: render.yaml
+success_criteria:
+  - All 34 original tests have equivalent Go coverage and pass.
+  - SSE and other response bodies remain streaming and unbuffered.
+  - Exact status codes, JSON bodies, headers, and path mapping match the original.
+  - Connect, idle, cancellation, and shutdown edge cases have explicit tests.
+  - Upstream failures never expose internal URLs, DNS details, or credentials.
+  - go test ./..., go vet ./..., and go build ./... pass.
+references:
+  - specs/product/VISION_LATEST.yaml
+  - specs/tech-architecture/tech-stack.md
+  - ../nvidia-api-proxy/server.js
+  - ../nvidia-api-proxy/server.test.js
+prior_art:
+  - candidate: nvidia-api-proxy/server.js
+    source: ../nvidia-api-proxy/server.js and https://github.com/ak-a-ra/nvidia-api-proxy
+    verdict: adopt
+    notes: >-
+      Verified behavior authority. It uses SHA-256 digests before timing-safe
+      comparison, preserves incoming paths and queries, strips content-encoding
+      from decompressed responses, keeps response cookies separate, and cancels
+      upstream work through one request-scoped abort signal.
+  - candidate: Go standard library net/http
+    source: Go 1.24+ runtime
+    verdict: adopt
+    notes: Provides server, client, request contexts, streaming response bodies, and graceful shutdown without dependencies.
+  - candidate: Third-party HTTP framework
+    source: none
+    verdict: build
+    notes: Not needed; the parity contract favors direct net/http behavior.

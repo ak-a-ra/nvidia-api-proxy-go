@@ -1,0 +1,22 @@
+schema_version: 1
+workflow_mode: solo-git
+session:
+  project: nvidia-api-proxy-go
+  active_flow: discover
+  started_at: '2026-09-24T14:08:26+07:00'
+  handoff:
+    next_skill: scope-work
+    reason: Greenfield scope and source behavior require explicit planning.
+vcs:
+  kind: none
+release:
+  target_version: null
+  last_tag: null
+  last_publish: null
+active_epic: null
+active_story: null
+metrics:
+  story_start: null
+  story_end: null
+  cycle_minutes: null
+  bcp_per_hour: null

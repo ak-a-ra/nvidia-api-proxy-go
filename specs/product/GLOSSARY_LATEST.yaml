@@ -1,0 +1,16 @@
+schema_version: 1
+terms:
+  - term: upstream
+    definition: NVIDIA API service receiving forwarded requests.
+  - term: proxy
+    definition: Go HTTP service authenticating and forwarding requests to upstream.
+  - term: parity
+    definition: Matching observable behavior of the original JavaScript implementation.
+  - term: first-response timeout
+    definition: Maximum wait for the first upstream response byte.
+  - term: idle timeout
+    definition: Maximum wait between upstream chunks, reset after every chunk.
+  - term: hop-by-hop header
+    definition: Header that applies only to one transport hop and must not be forwarded.
+  - term: graceful degradation
+    definition: Return a safe upstream-failure response without leaking internal details.

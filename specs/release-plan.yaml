@@ -1,0 +1,23 @@
+schema_version: 1
+release:
+  version: null
+  codename: parity-port
+  status: planning
+  semantic_release: true
+  bump_hint: patch
+epics:
+  - id: e01
+    title: Behavior-identical Go proxy
+    wsjf: 8.0
+    capsule_dir: epics/e01-parity-port
+    bcps: 30
+bugs:
+  total: 0
+  fixed: 0
+  deferred: 0
+  wontfix: 0
+  open: 0
+  registry: specs/bugs/registry.yaml
+notes:
+  - Story order is the approved port order.
+  - One story is one implementation commit unless a test or review artifact requires a separate checkpoint.

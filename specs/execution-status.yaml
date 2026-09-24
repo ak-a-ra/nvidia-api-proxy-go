@@ -1,0 +1,43 @@
+schema_version: 1
+stories:
+  e01s01:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s02:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s03:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s04:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s05:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s06:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s07:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s08:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s09:
+    status: todo
+    started_at: null
+    completed_at: null
+  e01s10:
+    status: todo
+    started_at: null
+    completed_at: null
+updated_at: '2026-09-24T14:08:26+07:00'

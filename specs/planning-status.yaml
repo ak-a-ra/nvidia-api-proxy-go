@@ -1,0 +1,12 @@
+schema_version: 1
+phase: plan
+checklist:
+  survey_context: done
+  research_first: done
+  scope_work: done
+  slice_tasks: done
+  plan_work: done
+notes:
+  - Source behavior verified against local and upstream server.js and server.test.js.
+  - Ten ordered stories are defined under specs/epics/e01-parity-port.
+  - Code remains unstarted; implementation begins after branch kickoff and clean baseline.

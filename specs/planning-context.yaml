@@ -1,0 +1,22 @@
+feature_name: nvidia-api-proxy-go parity port
+problem_statement: >-
+  The Node.js proxy has a verified public and operational contract that must be
+  preserved by a Go implementation.
+constraints:
+  - Go 1.24 or newer.
+  - Standard library only.
+  - No behavior changes without an approved requirement.
+  - One implementation story per approved port step.
+out_of_scope:
+  - Frameworks and third-party packages.
+  - Retries and rate limiting.
+  - Optimization and redesign.
+key_decisions:
+  - decision: Treat server.js and server.test.js as the behavior authority.
+    rationale: The requested port is a compatibility rewrite, not a redesign.
+  - decision: Preserve incoming paths and query strings while ignoring the base URL path.
+    rationale: This matches the verified source behavior and supports bases with or without /v1.
+  - decision: Preserve response cookies separately and join request cookie headers.
+    rationale: This matches Node request and response header semantics.
+  - decision: Use request context cancellation for upstream work.
+    rationale: Go's standard request lifecycle supports client disconnect cancellation.

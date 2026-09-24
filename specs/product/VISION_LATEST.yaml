@@ -1,0 +1,15 @@
+schema_version: 1
+status: draft
+project: nvidia-api-proxy-go
+north_star: >-
+  Provide a small, dependable Go proxy that replaces nvidia-api-proxy without
+  changing its observable HTTP behavior.
+success_criteria:
+  - All original tests pass with equivalent observable outcomes.
+  - Streaming remains unbuffered.
+  - Secrets and internal upstream details never reach clients or logs.
+  - Timeouts, cancellation, and shutdown behavior remain explicit and testable.
+principles:
+  - Parity before optimization.
+  - Standard library before dependencies.
+  - Evidence before completion.

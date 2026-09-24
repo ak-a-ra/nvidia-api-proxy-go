@@ -1,0 +1,16 @@
+story_id: e01s03
+title: Authenticate and route requests
+status: failing
+bcps: 3
+risk: P0
+security: high
+tasks:
+  - id: 1
+    description: Add constant-time bearer authentication, /v1/* routing, verbatim path mapping, and upstream auth replacement.
+    verify: go test ./... -run TestProxyRouting
+    status: failing
+    allure:
+      severity: critical
+      categories:
+        - authentication
+        - security review

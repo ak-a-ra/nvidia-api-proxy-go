@@ -1,0 +1,17 @@
+story_id: e01s06
+title: Enforce idle timeout
+status: failing
+bcps: 4
+risk: P0
+security: medium
+tasks:
+  - id: 1
+    description: Add per-chunk idle timeout reset with explicit stall, disabled, and active-stream coverage.
+    verify: go test ./... -run TestIdleTimeout
+    status: failing
+    allure:
+      severity: critical
+      categories:
+        - timeout
+        - streaming
+        - security review
