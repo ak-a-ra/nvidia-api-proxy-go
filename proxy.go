@@ -75,7 +75,27 @@ func proxyRequest(writer http.ResponseWriter, request *http.Request, config Conf
 		writer.Header()[name] = append([]string(nil), values...)
 	}
 	writer.WriteHeader(upstreamResponse.StatusCode)
-	_, _ = io.Copy(writer, upstreamResponse.Body)
+	copyStreaming(writer, upstreamResponse.Body)
+}
+
+func copyStreaming(writer http.ResponseWriter, source io.Reader) {
+	flusher, canFlush := writer.(http.Flusher)
+	buffer := make([]byte, 32*1024)
+	for {
+		count, err := source.Read(buffer)
+		if count > 0 {
+			_, _ = writer.Write(buffer[:count])
+			if canFlush {
+				flusher.Flush()
+			}
+		}
+		if err == io.EOF {
+			return
+		}
+		if err != nil {
+			return
+		}
+	}
 }
 
 func writeJSON(writer http.ResponseWriter, status int, value any) {
