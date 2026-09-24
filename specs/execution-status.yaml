@@ -29,15 +29,15 @@ stories:
     started_at: '2026-09-24T14:20:00+07:00'
     completed_at: '2026-09-24T14:22:00+07:00'
   e01s08:
-    status: in_progress
+    status: done
     started_at: '2026-09-24T14:22:00+07:00'
-    completed_at: null
+    completed_at: '2026-09-24T14:24:00+07:00'
   e01s09:
-    status: todo
-    started_at: null
+    status: in_progress
+    started_at: '2026-09-24T14:24:00+07:00'
     completed_at: null
   e01s10:
     status: todo
     started_at: null
     completed_at: null
-updated_at: '2026-09-24T14:22:00+07:00'
+updated_at: '2026-09-24T14:24:00+07:00'

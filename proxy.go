@@ -11,6 +11,23 @@ import (
 	"time"
 )
 
+var strippedHeaders = map[string]bool{
+	"connection":          true,
+	"keep-alive":          true,
+	"proxy-authenticate":  true,
+	"proxy-authorization": true,
+	"te":                  true,
+	"trailer":             true,
+	"transfer-encoding":   true,
+	"upgrade":             true,
+	"host":                true,
+	"content-length":      true,
+}
+
+var strippedResponseHeaders = map[string]bool{
+	"content-encoding": true,
+}
+
 func NewHandler(config Config) http.Handler {
 	client := &http.Client{Transport: &http.Transport{ResponseHeaderTimeout: config.ConnectTimeout}}
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
@@ -55,6 +72,25 @@ func authorized(request *http.Request, token string) bool {
 	return subtle.ConstantTimeCompare(expected[:], actual[:]) == 1
 }
 
+func copyRequestHeaders(destination, source http.Header) {
+	for name, values := range source {
+		if strippedHeaders[strings.ToLower(name)] {
+			continue
+		}
+		destination.Set(name, strings.Join(values, ", "))
+	}
+}
+
+func copyResponseHeaders(destination, source http.Header) {
+	for name, values := range source {
+		lowerName := strings.ToLower(name)
+		if strippedHeaders[lowerName] || strippedResponseHeaders[lowerName] {
+			continue
+		}
+		destination[name] = append([]string(nil), values...)
+	}
+}
+
 func proxyRequest(writer http.ResponseWriter, request *http.Request, config Config, client *http.Client) {
 	target := config.UpstreamOrigin + request.URL.RequestURI()
 	var body io.Reader
@@ -66,16 +102,16 @@ func proxyRequest(writer http.ResponseWriter, request *http.Request, config Conf
 		writeJSON(writer, http.StatusBadGateway, map[string]string{"error": "Bad gateway"})
 		return
 	}
+	copyRequestHeaders(upstreamRequest.Header, request.Header)
 	upstreamRequest.Header.Set("Authorization", "Bearer "+config.APIKey)
+	upstreamRequest.Header.Set("Accept-Encoding", "identity")
 	upstreamResponse, err := client.Do(upstreamRequest)
 	if err != nil {
 		writeJSON(writer, http.StatusBadGateway, map[string]string{"error": "Bad gateway"})
 		return
 	}
 	defer upstreamResponse.Body.Close()
-	for name, values := range upstreamResponse.Header {
-		writer.Header()[name] = append([]string(nil), values...)
-	}
+	copyResponseHeaders(writer.Header(), upstreamResponse.Header)
 	writer.WriteHeader(upstreamResponse.StatusCode)
 	copyStreaming(writer, upstreamResponse.Body, config.IdleTimeout)
 }
