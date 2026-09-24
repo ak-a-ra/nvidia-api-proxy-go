@@ -11,6 +11,7 @@ import (
 )
 
 func NewHandler(config Config) http.Handler {
+	client := &http.Client{Transport: &http.Transport{ResponseHeaderTimeout: config.ConnectTimeout}}
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		if request.URL.Path == "/health" {
 			if config.Unconfigured {
@@ -32,7 +33,7 @@ func NewHandler(config Config) http.Handler {
 			writeJSON(writer, http.StatusServiceUnavailable, map[string]string{"error": "Proxy is not configured"})
 			return
 		}
-		proxyRequest(writer, request, config)
+		proxyRequest(writer, request, config, client)
 	})
 }
 
@@ -53,7 +54,7 @@ func authorized(request *http.Request, token string) bool {
 	return subtle.ConstantTimeCompare(expected[:], actual[:]) == 1
 }
 
-func proxyRequest(writer http.ResponseWriter, request *http.Request, config Config) {
+func proxyRequest(writer http.ResponseWriter, request *http.Request, config Config, client *http.Client) {
 	target := config.UpstreamOrigin + request.URL.RequestURI()
 	var body io.Reader
 	if request.Method != http.MethodGet && request.Method != http.MethodHead {
@@ -65,7 +66,7 @@ func proxyRequest(writer http.ResponseWriter, request *http.Request, config Conf
 		return
 	}
 	upstreamRequest.Header.Set("Authorization", "Bearer "+config.APIKey)
-	upstreamResponse, err := http.DefaultClient.Do(upstreamRequest)
+	upstreamResponse, err := client.Do(upstreamRequest)
 	if err != nil {
 		writeJSON(writer, http.StatusBadGateway, map[string]string{"error": "Bad gateway"})
 		return
