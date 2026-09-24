@@ -1,14 +1,14 @@
 story_id: e01s01
 title: Parse and validate configuration
-status: failing
+status: passing
 bcps: 3
 risk: P0
 security: medium
 tasks:
   - id: 1
     description: Add config parsing, defaults, URL validation, and startup failure behavior with tests.
-    verify: go test ./... -run TestConfig
-    status: failing
+    verify: go test ./... -run TestLoadConfig
+    status: passing
     allure:
       severity: critical
       categories:

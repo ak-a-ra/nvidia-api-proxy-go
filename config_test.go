@@ -36,8 +36,8 @@ func TestLoadConfigInvalidBaseURL(t *testing.T) {
 		want string
 	}{
 		{name: "missing", base: "", want: "NVIDIA_BASE_URL is required"},
-		{name: "malformed", base: "not-a-url", want: "NVIDIA_BASE_URL is not a valid URL"},
-		{name: "unsupported scheme", base: "file:///etc/hosts", want: "NVIDIA_BASE_URL must use http or https"},
+		{name: "malformed", base: "not-a-url", want: "NVIDIA_BASE_URL is not a valid URL: not-a-url"},
+		{name: "unsupported scheme", base: "file:///etc/hosts", want: "NVIDIA_BASE_URL must use http or https, got: file:///etc/hosts"},
 	}
 
 	for _, test := range tests {

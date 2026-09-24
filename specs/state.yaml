@@ -2,21 +2,28 @@ schema_version: 1
 workflow_mode: solo-git
 session:
   project: nvidia-api-proxy-go
-  active_flow: discover
+  active_flow: build_epic
   started_at: '2026-09-24T14:08:26+07:00'
   handoff:
-    next_skill: scope-work
-    reason: Greenfield scope and source behavior require explicit planning.
+    last_step_completed: e01s01 configuration tests and implementation passed
+    open_decisions: []
+    required_reading:
+      - CONVENTIONS.md
+      - specs/product/SCOPE_LATEST.yaml
+      - specs/epics/e01-parity-port/epic.yaml
+    next_skill: develop-tdd
 vcs:
-  kind: none
+  kind: git
+  branch: feat/parity-port
+  hash: be9a8c7
 release:
   target_version: null
   last_tag: null
   last_publish: null
-active_epic: null
-active_story: null
+active_epic: e01
+active_story: e01s02
 metrics:
-  story_start: null
+  story_start: '2026-09-24T14:10:00+07:00'
   story_end: null
   cycle_minutes: null
   bcp_per_hour: null
