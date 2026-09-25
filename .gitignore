@@ -1,6 +1,9 @@
 .agents/
 .cursor/
 .codex/
+.env
+.env.*
+!.env.example
 CLAUDE.md
 GEMINI.md
 /RTK.md

@@ -47,12 +47,14 @@ flowchart LR
 From the project directory:
 
 ```bash
-export NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
-export NVIDIA_API_KEY="nvapi-..."
-export PROXY_AUTH_TOKEN="your-proxy-token"
+cp .env.example .env
+# Edit .env and replace both placeholder secrets.
+set -a; . ./.env; set +a
 
 go run .
 ```
+
+`.env` is ignored by Git. `.env.example` lists every supported runtime setting.
 
 The server listens on port `10000` by default.
 
