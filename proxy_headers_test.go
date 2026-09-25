@@ -7,16 +7,54 @@ import (
 	"testing"
 )
 
-func TestProxyCopiesHeadersAndPreservesResponseCookies(t *testing.T) {
-	var receivedContentType string
-	var receivedContentEncoding string
-	var receivedRequestCookie string
-	var receivedConnection string
+func TestProxyHeadersStripConnectionNominatedFields(t *testing.T) {
+	receivedHop := make(chan string, 1)
 	upstream := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		receivedContentType = request.Header.Get("Content-Type")
-		receivedContentEncoding = request.Header.Get("Content-Encoding")
-		receivedRequestCookie = request.Header.Get("Set-Cookie")
-		receivedConnection = request.Header.Get("Connection")
+		receivedHop <- request.Header.Get("X-Hop")
+		writer.Header().Set("Connection", "X-Hop")
+		writer.Header().Set("X-Hop", "response")
+		writer.WriteHeader(http.StatusNoContent)
+	}))
+	t.Cleanup(upstream.Close)
+
+	proxy := httptest.NewServer(NewHandler(Config{APIKey: "sk-test", ProxyToken: "pt-test", UpstreamOrigin: upstream.URL}))
+	t.Cleanup(proxy.Close)
+	request, err := http.NewRequest(http.MethodGet, proxy.URL+"/v1/models", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Header.Set("Authorization", "Bearer pt-test")
+	request.Header.Set("Connection", "X-Hop")
+	request.Header.Set("X-Hop", "request")
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer response.Body.Close()
+
+	if hop := <-receivedHop; hop != "" {
+		t.Fatalf("upstream X-Hop = %q", hop)
+	}
+	if hop := response.Header.Get("X-Hop"); hop != "" {
+		t.Fatalf("response X-Hop = %q", hop)
+	}
+}
+
+func TestProxyCopiesHeadersAndPreservesResponseCookies(t *testing.T) {
+	type receivedHeaders struct {
+		contentType     string
+		contentEncoding string
+		cookie          string
+		connection      string
+	}
+	received := make(chan receivedHeaders, 1)
+	upstream := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		received <- receivedHeaders{
+			contentType:     request.Header.Get("Content-Type"),
+			contentEncoding: request.Header.Get("Content-Encoding"),
+			cookie:          request.Header.Get("Set-Cookie"),
+			connection:      request.Header.Get("Connection"),
+		}
 		writer.Header().Add("Set-Cookie", "a=1; Path=/")
 		writer.Header().Add("Set-Cookie", "b=2; Path=/")
 		writer.Header().Set("Connection", "keep-alive")
@@ -48,17 +86,18 @@ func TestProxyCopiesHeadersAndPreservesResponseCookies(t *testing.T) {
 	}
 	defer response.Body.Close()
 
-	if receivedContentType != "application/json" {
-		t.Fatalf("upstream Content-Type = %q", receivedContentType)
+	got := <-received
+	if got.contentType != "application/json" {
+		t.Fatalf("upstream Content-Type = %q", got.contentType)
 	}
-	if receivedContentEncoding != "gzip" {
-		t.Fatalf("upstream Content-Encoding = %q", receivedContentEncoding)
+	if got.contentEncoding != "gzip" {
+		t.Fatalf("upstream Content-Encoding = %q", got.contentEncoding)
 	}
-	if receivedRequestCookie != "sid=abc; Path=/, theme=dark; Path=/" {
-		t.Fatalf("upstream Set-Cookie = %q", receivedRequestCookie)
+	if got.cookie != "sid=abc; Path=/, theme=dark; Path=/" {
+		t.Fatalf("upstream Set-Cookie = %q", got.cookie)
 	}
-	if receivedConnection != "" {
-		t.Fatalf("upstream Connection = %q", receivedConnection)
+	if got.connection != "" {
+		t.Fatalf("upstream Connection = %q", got.connection)
 	}
 	if got := response.Header.Values("Set-Cookie"); len(got) != 2 || got[0] != "a=1; Path=/" || got[1] != "b=2; Path=/" {
 		t.Fatalf("response Set-Cookie = %#v", got)

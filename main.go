@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+const shutdownTimeout = 10 * time.Second
+
 func main() {
 	config, err := LoadConfig()
 	if err != nil {
@@ -42,7 +44,7 @@ func runServer(server *http.Server) error {
 	shutdownComplete := make(chan struct{})
 	go func() {
 		<-signals
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 		defer cancel()
 		_ = server.Shutdown(ctx)
 		close(shutdownComplete)

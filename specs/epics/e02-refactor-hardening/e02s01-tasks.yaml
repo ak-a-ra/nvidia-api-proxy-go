@@ -1,0 +1,51 @@
+story_id: e02s01
+title: Refactor and harden the proxy
+status: passing
+bcps: 13
+risk: P0
+tasks:
+  - id: 1
+    description: Add routing normalization regressions and implementation.
+    verify: "go test -run 'TestProxyRouting' ./..."
+    risk: P0
+    status: passing
+    security: high
+    allure:
+      severity: critical
+      categories: [Security Review]
+  - id: 2
+    description: Harden header nomination and encoding framing with regression tests.
+    verify: "go test -run 'TestProxyHeaders|TestUpstream|TestNoContent|TestHead' ./..."
+    risk: P0
+    status: passing
+    security: high
+    allure:
+      severity: critical
+      categories: [Security Review]
+  - id: 3
+    description: Cover the full connect window and gzip idle closure.
+    verify: "go test -run 'TestConnectTimeout|TestIdleTimeout' ./..."
+    risk: P0
+    status: passing
+    security: medium
+    allure:
+      severity: critical
+      categories: [Streaming, Security Review]
+  - id: 4
+    description: Introduce internal proxy state and precomputed authentication data.
+    verify: "go test ./..."
+    risk: P1
+    status: passing
+    security: medium
+    allure:
+      severity: high
+      categories: [Refactor]
+  - id: 5
+    description: Remove shared test captures and complete the platform-supported verification stack.
+    verify: "go test ./... && go vet ./... && go build -o \"$TMPDIR/nvidia-api-proxy-go-verify\" ."
+    risk: P1
+    status: passing
+    security: none
+    allure:
+      severity: high
+      categories: [Quality]

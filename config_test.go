@@ -54,6 +54,20 @@ func TestLoadConfigInvalidBaseURL(t *testing.T) {
 	}
 }
 
+func TestLoadConfigAcceptsPaddedNumericValues(t *testing.T) {
+	t.Setenv("NVIDIA_BASE_URL", "http://127.0.0.1:8080")
+	t.Setenv("PORT", " 8080 ")
+	t.Setenv("UPSTREAM_CONNECT_TIMEOUT_SECONDS", " 1 ")
+	t.Setenv("UPSTREAM_IDLE_TIMEOUT_SECONDS", " 2 ")
+	config, err := LoadConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if config.Port != 8080 || config.ConnectTimeout != time.Second || config.IdleTimeout != 2*time.Second {
+		t.Fatalf("port/timeouts = %d, %s, %s", config.Port, config.ConnectTimeout, config.IdleTimeout)
+	}
+}
+
 func TestLoadConfigTimeoutValues(t *testing.T) {
 	t.Setenv("NVIDIA_BASE_URL", "http://127.0.0.1:8080")
 	t.Setenv("NVIDIA_API_KEY", "sk-test")
@@ -70,6 +84,19 @@ func TestLoadConfigTimeoutValues(t *testing.T) {
 	}
 	if config.IdleTimeout != 120*time.Second {
 		t.Fatalf("IdleTimeout = %s, want 120s", config.IdleTimeout)
+	}
+}
+
+func TestTimeoutValuesBeyondDurationRangeFallBack(t *testing.T) {
+	t.Setenv("NVIDIA_BASE_URL", "http://127.0.0.1:8080")
+	t.Setenv("UPSTREAM_CONNECT_TIMEOUT_SECONDS", "1e100")
+	t.Setenv("UPSTREAM_IDLE_TIMEOUT_SECONDS", "1e100")
+	config, err := LoadConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if config.ConnectTimeout != 30*time.Second || config.IdleTimeout != 120*time.Second {
+		t.Fatalf("timeouts = %s, %s", config.ConnectTimeout, config.IdleTimeout)
 	}
 }
 

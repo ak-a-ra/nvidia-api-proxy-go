@@ -40,4 +40,8 @@ stories:
     status: done
     started_at: '2026-09-24T14:26:00+07:00'
     completed_at: '2026-09-24T14:30:00+07:00'
-updated_at: '2026-09-24T14:30:00+07:00'
+  e02s01:
+    status: in_progress
+    started_at: '2026-09-25T00:00:00+07:00'
+    completed_at: null
+updated_at: '2026-09-25T00:28:22+07:00'

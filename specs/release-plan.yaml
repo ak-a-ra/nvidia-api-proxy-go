@@ -2,7 +2,7 @@ schema_version: 1
 release:
   version: null
   codename: parity-port
-  status: planning
+  status: in_progress
   semantic_release: true
   bump_hint: patch
 epics:
@@ -11,6 +11,11 @@ epics:
     wsjf: 8.0
     capsule_dir: epics/e01-parity-port
     bcps: 30
+  - id: e02
+    title: Refactor and harden the completed proxy
+    wsjf: 7.5
+    capsule_dir: epics/e02-refactor-hardening
+    bcps: 13
 bugs:
   total: 0
   fixed: 0

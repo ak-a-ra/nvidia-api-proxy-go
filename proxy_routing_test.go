@@ -8,11 +8,16 @@ import (
 )
 
 func TestProxyRoutingPreservesPathAndQuery(t *testing.T) {
-	var receivedPath string
-	var receivedAuthorization string
+	type receivedRequest struct {
+		path          string
+		authorization string
+	}
+	received := make(chan receivedRequest, 1)
 	upstream := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		receivedPath = request.URL.RequestURI()
-		receivedAuthorization = request.Header.Get("Authorization")
+		received <- receivedRequest{
+			path:          request.URL.RequestURI(),
+			authorization: request.Header.Get("Authorization"),
+		}
 		writer.Header().Set("Content-Type", "application/json")
 		_, _ = writer.Write([]byte(`{"ok":true}`))
 	}))
@@ -32,11 +37,61 @@ func TestProxyRoutingPreservesPathAndQuery(t *testing.T) {
 	if response.Code != http.StatusOK {
 		t.Fatalf("status = %d, want 200", response.Code)
 	}
-	if receivedPath != "/v1/chat/completions?stream=true" {
-		t.Fatalf("upstream path = %q", receivedPath)
+	got := <-received
+	if got.path != "/v1/chat/completions?stream=true" {
+		t.Fatalf("upstream path = %q", got.path)
 	}
-	if receivedAuthorization != "Bearer sk-test" {
-		t.Fatalf("upstream authorization = %q", receivedAuthorization)
+	if got.authorization != "Bearer sk-test" {
+		t.Fatalf("upstream authorization = %q", got.authorization)
+	}
+}
+
+func TestProxyRoutingNormalizesDotSegments(t *testing.T) {
+	tests := []struct {
+		name       string
+		requestURI string
+		wantStatus int
+		wantPath   string
+	}{
+		{name: "escape", requestURI: "/v1/../admin", wantStatus: http.StatusNotFound},
+		{name: "encoded escape", requestURI: "/v1/%2e%2e/admin", wantStatus: http.StatusNotFound},
+		{name: "internal", requestURI: "/v1/a/../models?stream=true", wantStatus: http.StatusOK, wantPath: "/v1/models?stream=true"},
+		{name: "encoded slash", requestURI: "/v1/a%2Fb", wantStatus: http.StatusOK, wantPath: "/v1/a%2Fb"},
+		{name: "encoded slash before dot", requestURI: "/v1/a%2F../admin", wantStatus: http.StatusOK, wantPath: "/v1/a%2F../admin"},
+		{name: "double slash", requestURI: "/v1//models", wantStatus: http.StatusOK, wantPath: "/v1//models"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			received := make(chan string, 1)
+			upstream := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+				received <- request.URL.RequestURI()
+				writer.WriteHeader(http.StatusOK)
+			}))
+			t.Cleanup(upstream.Close)
+
+			handler := NewHandler(Config{APIKey: "sk-test", ProxyToken: "pt-test", UpstreamOrigin: upstream.URL})
+			request := httptest.NewRequest(http.MethodGet, test.requestURI, nil)
+			request.Header.Set("Authorization", "Bearer pt-test")
+			response := httptest.NewRecorder()
+
+			handler.ServeHTTP(response, request)
+
+			if response.Code != test.wantStatus {
+				t.Fatalf("status = %d, want %d", response.Code, test.wantStatus)
+			}
+			if test.wantPath == "" {
+				select {
+				case path := <-received:
+					t.Fatalf("unexpected upstream request %q", path)
+				default:
+				}
+				return
+			}
+			if path := <-received; path != test.wantPath {
+				t.Fatalf("upstream path = %q, want %q", path, test.wantPath)
+			}
+		})
 	}
 }
 

@@ -1,0 +1,35 @@
+story_id: e02s01
+verified_at: "2026-09-25T05:35:30+07:00"
+verifier: opencode
+terminal_verdict:
+  command: "go test ./... && go vet ./... && go build ./..."
+  exit_code: 0
+  captured_at: "2026-09-25T05:35:30+07:00"
+phases:
+  focused_regressions:
+    passed: true
+    command: "go test -run 'TestInvalidUpstreamContentLengthIsDropped|TestCopyStreamingRejectsShortWrites|TestProxyRouting|TestProxyHeaders|TestConnectTimeout|TestIdleTimeout|TestUnsupportedUpstreamEncoding' ./..."
+  repeatability:
+    passed: true
+    command: "go test -count=3 ./..."
+  tests:
+    passed: true
+    command: "go test ./..."
+  vet:
+    passed: true
+    command: "go vet ./..."
+  build:
+    passed: true
+    command: "go build ./..."
+  race:
+    passed: false
+    command: "go test -race ./..."
+    note: "Unsupported on the current Android/arm64 host: -race is not supported on android/arm64."
+  manual:
+    passed: false
+    note: "User UAT is pending."
+gaps:
+  closed: false
+  items:
+    - Confirm user-visible behavior manually.
+    - Run race detection on a supported host.

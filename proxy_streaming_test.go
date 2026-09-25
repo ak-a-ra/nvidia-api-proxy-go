@@ -1,12 +1,42 @@
 package main
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 )
+
+type shortResponseWriter struct {
+	header http.Header
+	status int
+	body   []byte
+}
+
+func (writer *shortResponseWriter) Header() http.Header {
+	return writer.header
+}
+
+func (writer *shortResponseWriter) WriteHeader(status int) {
+	writer.status = status
+}
+
+func (writer *shortResponseWriter) Write(buffer []byte) (int, error) {
+	writer.body = append(writer.body, buffer...)
+	return len(buffer) - 1, nil
+}
+
+func TestCopyStreamingRejectsShortWrites(t *testing.T) {
+	writer := &shortResponseWriter{header: make(http.Header)}
+	source := io.NopCloser(strings.NewReader("payload"))
+
+	if err := copyStreaming(writer, source, 0); !errors.Is(err, io.ErrShortWrite) {
+		t.Fatalf("copyStreaming() error = %v, want %v", err, io.ErrShortWrite)
+	}
+}
 
 func TestStreamingDeliversFirstChunkBeforeStreamEnds(t *testing.T) {
 	releaseSecond := make(chan struct{})

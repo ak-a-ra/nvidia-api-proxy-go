@@ -11,16 +11,21 @@ import (
 )
 
 func TestPostBodyQueryAndAuthReplacement(t *testing.T) {
-	var gotMethod string
-	var gotPath string
-	var gotBody string
-	var gotAuthorization string
+	type receivedRequest struct {
+		method        string
+		path          string
+		body          string
+		authorization string
+	}
+	received := make(chan receivedRequest, 1)
 	upstream := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		body, _ := io.ReadAll(request.Body)
-		gotMethod = request.Method
-		gotPath = request.URL.RequestURI()
-		gotBody = string(body)
-		gotAuthorization = request.Header.Get("Authorization")
+		received <- receivedRequest{
+			method:        request.Method,
+			path:          request.URL.RequestURI(),
+			body:          string(body),
+			authorization: request.Header.Get("Authorization"),
+		}
 		_, _ = writer.Write([]byte(`{"ok":true}`))
 	}))
 	t.Cleanup(upstream.Close)
@@ -39,14 +44,15 @@ func TestPostBodyQueryAndAuthReplacement(t *testing.T) {
 	}
 	defer response.Body.Close()
 
-	if gotMethod != http.MethodPost || gotPath != "/v1/chat/completions?stream=true" {
-		t.Fatalf("upstream method/path = %q %q", gotMethod, gotPath)
+	got := <-received
+	if got.method != http.MethodPost || got.path != "/v1/chat/completions?stream=true" {
+		t.Fatalf("upstream method/path = %q %q", got.method, got.path)
 	}
-	if gotBody != `{"model":"nemotron"}` {
-		t.Fatalf("upstream body = %q", gotBody)
+	if got.body != `{"model":"nemotron"}` {
+		t.Fatalf("upstream body = %q", got.body)
 	}
-	if gotAuthorization != "Bearer sk-test" {
-		t.Fatalf("upstream authorization = %q", gotAuthorization)
+	if got.authorization != "Bearer sk-test" {
+		t.Fatalf("upstream authorization = %q", got.authorization)
 	}
 }
 
@@ -62,9 +68,9 @@ func TestLoadConfigIgnoresBaseURLPath(t *testing.T) {
 }
 
 func TestUnauthenticatedRequestIsRejectedBeforeUnconfigured(t *testing.T) {
-	upstreamCalled := false
+	upstreamCalled := make(chan struct{}, 1)
 	upstream := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		upstreamCalled = true
+		upstreamCalled <- struct{}{}
 	}))
 	t.Cleanup(upstream.Close)
 	proxy := httptest.NewServer(NewHandler(Config{ProxyToken: "pt-test", UpstreamOrigin: upstream.URL, Unconfigured: true}))
@@ -82,8 +88,10 @@ func TestUnauthenticatedRequestIsRejectedBeforeUnconfigured(t *testing.T) {
 	if response.StatusCode != http.StatusUnauthorized {
 		t.Fatalf("status = %d, want 401", response.StatusCode)
 	}
-	if upstreamCalled {
+	select {
+	case <-upstreamCalled:
 		t.Fatal("unauthenticated request reached upstream")
+	default:
 	}
 }
 
@@ -122,12 +130,23 @@ func TestMidStreamFailureKeepsProxyAvailable(t *testing.T) {
 	t.Cleanup(proxy.Close)
 
 	client := &http.Client{Timeout: 2 * time.Second}
-	response, err := client.Get(proxy.URL + "/v1/models")
-	if response != nil {
-		_, _ = io.ReadAll(response.Body)
-		_ = response.Body.Close()
+	request, err := http.NewRequest(http.MethodGet, proxy.URL+"/v1/models", nil)
+	if err != nil {
+		t.Fatal(err)
 	}
-	_ = err
+	request.Header.Set("Authorization", "Bearer pt-test")
+	response, err := client.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body, streamErr := io.ReadAll(response.Body)
+	_ = response.Body.Close()
+	if string(body) != "partial" {
+		t.Fatalf("partial body = %q", body)
+	}
+	if streamErr == nil {
+		t.Fatal("mid-stream failure ended as a clean response")
+	}
 	health, healthErr := client.Get(proxy.URL + "/health")
 	if healthErr != nil {
 		t.Fatal(healthErr)

@@ -1,0 +1,18 @@
+schema_version: 1
+id: e02
+title: Refactor and harden the completed proxy
+wsjf: 7.5
+total_bcps: 13
+status: in_progress
+bump_hint: patch
+notes:
+  - Preserve the completed parity contract.
+  - Fix confirmed routing, timeout, compression, and header edge defects.
+  - Improve internal structure without adding dependencies.
+stories:
+  - id: e02s01
+    title: Harden and structure the proxy
+    bcps: 13
+    status: in_progress
+    spec: e02s01-refactor-hardening.md
+    tasks: e02s01-tasks.yaml

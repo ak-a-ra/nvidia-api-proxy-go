@@ -2,17 +2,20 @@ schema_version: 1
 workflow_mode: solo-git
 session:
   project: nvidia-api-proxy-go
-  active_flow: build_epic
+  active_flow: verify_work
   started_at: '2026-09-24T14:08:26+07:00'
   handoff:
-    last_step_completed: verify-work and audit evidence recorded
+    last_step_completed: e02 senior review refactor and mechanical verification
     open_decisions:
-      - User manual UAT confirmation was unavailable.
+      - User manual UAT confirmation is pending.
+      - Go race detection is unavailable on the current Android/arm64 host.
+      - Server read-header deadlines and active-shutdown completion remain deployment-policy decisions.
     required_reading:
       - CONVENTIONS.md
-      - specs/product/SCOPE_LATEST.yaml
-      - specs/epics/e01-parity-port/epic.yaml
-    next_skill: commit-message
+      - specs/tech-architecture/tech-stack.md
+      - specs/tech-architecture/REFACTOR_LATEST.md
+      - specs/epics/e02-refactor-hardening/e02s01-refactor-hardening.md
+    next_skill: verify-work
 vcs:
   kind: git
   branch: feat/parity-port
@@ -21,10 +24,10 @@ release:
   target_version: null
   last_tag: null
   last_publish: null
-active_epic: e01
-active_story: e01s10
+active_epic: e02
+active_story: e02s01
 metrics:
-  story_start: '2026-09-24T14:26:00+07:00'
-  story_end: '2026-09-24T14:30:00+07:00'
+  story_start: '2026-09-25T00:00:00+07:00'
+  story_end: null
   cycle_minutes: null
   bcp_per_hour: null
