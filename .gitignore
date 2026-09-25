@@ -3,3 +3,6 @@
 .codex/
 CLAUDE.md
 GEMINI.md
+/RTK.md
+/dist/
+/nvidia-api-proxy-go

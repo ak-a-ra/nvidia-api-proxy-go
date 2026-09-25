@@ -3,7 +3,7 @@ services:
     name: nvidia-api-proxy-go
     runtime: go
     plan: free
-    buildCommand: go build -o app .
+    buildCommand: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o app .
     startCommand: ./app
     healthCheckPath: /health
     envVars:
