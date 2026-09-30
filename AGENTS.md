@@ -84,6 +84,7 @@ Stack: Go 1.24+ with `net/http` and other standard-library packages only.
 - **Workflow Mandate:** Use bigpowers skills such as `plan-work` and `develop-tdd` for structured work.
 - **Always Green:** Keep Preflight and CI green before forward work.
 - Read `specs/` and `CONVENTIONS.md` before writing code.
+- Read `LOG.md` at start. At end of each task, append 3 lines: done, decided, next.
 - Write the minimum code that satisfies the requirement.
 - Run tests after every change and show evidence before declaring completion.
 - Put all planning output in `specs/`.
