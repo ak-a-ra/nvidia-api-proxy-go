@@ -69,5 +69,9 @@ Fixed and released.
   - run 36693908686 — PR #1, `test` job PASS
   - run 36694189176 — `main` post-fix, lint/test/build PASS
   - run 36695587084 — `main` after closeout, lint/test/build PASS
-  - run 36697276545 — `main` at the current tip, lint/test/build PASS
+  - run 36697276545 — `main`, lint/test/build PASS
+  - run 36699423444 — `main`, lint/test/build PASS
+
+  Every `push` run on `main` after the fix has passed; enumerate with
+  `gh run list --branch main --event push`.
 - **Landed**: squash-merged as `4ffd83b` via PR #1. Local green without `-race` is not accepted as evidence for this bug; every claim above is from a CI run.
