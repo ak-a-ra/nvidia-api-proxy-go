@@ -85,15 +85,22 @@ CI — every `push` run on `main`:
 | 36689114367 | `0c58454` | **FAIL** — `test` job caught the gzip data race |
 | 36694189176 | `4ffd83b` | PASS — lint, test (`-race`), build |
 | 36695587084 | `7e6c669` | PASS — lint, test (`-race`), build |
-| 36697276545 | `5bc2209` (current tip) | PASS — lint, test (`-race`), build |
+| 36697276545 | `5bc2209` | PASS — lint, test (`-race`), build |
+| 36699423444 | `7e36b39` | PASS — lint, test (`-race`), build |
 
 CI — `pull_request` runs (supporting evidence, not `main` runs):
 
 - 36693908686 — PR #1, all three jobs PASS, the first detector confirmation of the fix
 - 36697025485 — PR #3, all three jobs PASS
 
-The pre-fix run and the current-tip run are the load-bearing pair: the same `test` job that
-reported the race now passes on `main`.
+The first row and the last row are the load-bearing pair: the same `test` job that reported
+the race now passes on `main`. Every `push` run on `main` after the fix has passed.
+
+> **Do not freeze a "current tip" in this table.** Each merge to `main` adds a row and makes any
+> such marker stale, so the table records history rather than a moving head. Enumerate with
+> `gh run list --branch main --event push`; plain `gh run list --branch main` also returns
+> `pull_request` runs whose `headBranch` is the feature branch, which is what produced an
+> earlier miscitation of a PR run as a `main` run.
 
 Spec gates:
 
@@ -122,5 +129,6 @@ Spec gates:
 - `specs/verifications/e01s01-verify.yaml` … `e01s09-verify.yaml`
 - `specs/traceability-matrix.json`, `specs/TRACEABILITY_LATEST.md`
 - `specs/state.yaml` (`gate_trace.verdict: PASS`)
-- CI: `main` push runs 36689114367 (pre-fix failure), 36694189176, 36695587084, and
-  36697276545 (current tip); PR runs 36693908686 (PR #1) and 36697025485 (PR #3)
+- CI: `main` push runs 36689114367 (pre-fix failure) then 36694189176, 36695587084,
+  36697276545, 36699423444, all passing; PR runs 36693908686 (PR #1), 36697025485 (PR #3),
+  36699184605 (PR #4), and the PR #5 run
