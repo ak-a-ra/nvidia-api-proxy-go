@@ -52,12 +52,21 @@
 
 ## Acceptance Criteria
 
-- [ ] `go test ./... -race` passes in CI.
-- [ ] `TestIdleTimeoutClosesTransportBodyForGzipStream` still asserts the transport body is closed and the stream errors.
-- [ ] Gzip response decoding, framing, and header behavior are unchanged.
-- [ ] All new tests pass.
-- [ ] Existing tests still pass.
+- [x] `go test ./... -race` passes in CI.
+- [x] `TestIdleTimeoutClosesTransportBodyForGzipStream` still asserts the transport body is closed and the stream errors.
+- [x] Gzip response decoding, framing, and header behavior are unchanged.
+- [x] All new tests pass.
+- [x] Existing tests still pass.
 
 ## Resolution
 
-<!-- filled in by validate-fix -->
+Fixed and released.
+
+- **Fix**: the decoding body's `Close` no longer calls `gzip.Reader.Close`; it closes only the upstream source under a single-fire guard. `gzip.Reader` owns no resource, and its `Close` return value was already discarded, so no observable behavior changed.
+- **Regression test**: `TestIdleTimeoutGzipCloseOverlapsInFlightRead` repeats the read/close overlap 20 times so the race detector gets many samples.
+- **Verified by the detector**, which this host cannot run locally:
+  - run 36689114367 — `main`, pre-fix, `test` job FAIL with this race
+  - run 36693908686 — PR #1, `test` job PASS
+  - run 36694189176 — `main` post-fix, lint/test/build PASS
+  - run 36695587084 — `main` after closeout, lint/test/build PASS
+- **Landed**: squash-merged as `4ffd83b` via PR #1. Local green without `-race` is not accepted as evidence for this bug; every claim above is from a CI run.

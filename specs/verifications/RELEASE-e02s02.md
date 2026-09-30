@@ -1,5 +1,10 @@
 # Release Handoff: e02s02
 
+> **SUPERSEDED (2026-09-30)** — The `KEEP BRANCH` verdict below was correct for the
+> environment it was recorded in, but its blockers were resolved and the branch was
+> landed. See [`RELEASE-e02s02-closeout.md`](./RELEASE-e02s02-closeout.md) for the
+> current release decision. Kept for history.
+
 **Date:** 2026-09-26
 **Branch:** `feat/parity-port`
 **Mode:** `solo-git`
