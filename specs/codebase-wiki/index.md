@@ -1,6 +1,6 @@
 ---
 type: Index
-generated_at: 2026-09-30T08:16:05.732968+00:00
+generated_at: 2026-09-30T09:15:11.903047+00:00
 total_concepts: 12
 ---
 
@@ -21,4 +21,4 @@ Auto-generated OKF bundle from trace-stories.sh.
 | [e01s09](./e01s09.md) | Shut down on SIGTERM | high | 4 |
 | [e01s10](./e01s10.md) | Port and verify all parity tests | high | 3 |
 | [e02s01](./e02s01.md) | Harden and structure the proxy | high | 7 |
-| [e02s02](./e02s02.md) | Close release coverage gates | high | 5 |
+| [e02s02](./e02s02.md) | Close release coverage gates | high | 6 |

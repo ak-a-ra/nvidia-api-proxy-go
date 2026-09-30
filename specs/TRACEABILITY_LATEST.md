@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-**Generated:** 2026-09-30 08:16:05 UTC
+**Generated:** 2026-09-30 09:15:11 UTC
 **Total stories:** 12
 **Tagged stories:** 12
 **Dark stories:** 0
@@ -10,7 +10,7 @@
 ## Oracle Stats
 
 - **High** (explicit tag): 45
-- **Medium** (file heuristic): 3
+- **Medium** (file heuristic): 4
 - **Low** (task reference): 0
 
 ## Story Coverage
@@ -28,7 +28,7 @@
 | e01s09 | Shut down on SIGTERM | e01 | 0 | 8.0 | done | 4 |
 | e01s10 | Port and verify all parity tests | e01 | 0 | 8.0 | done | 3 |
 | e02s01 | Harden and structure the proxy | e02 | 0 | 7.5 | done | 7 |
-| e02s02 | Close release coverage gates | e02 | 0 | 7.5 | done | 5 |
+| e02s02 | Close release coverage gates | e02 | 0 | 7.5 | done | 6 |
 
 ## Orphan Tags (tag in code, no matching story)
 

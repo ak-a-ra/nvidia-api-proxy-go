@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-30T08:16:05.730434+00:00",
+  "generated_at": "2026-09-30T09:15:11.902350+00:00",
   "matrix_version": "1.0",
   "stories": [
     {
@@ -12,7 +12,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s01-configuration.md",
+          "file": "specs/verifications/e01s01-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -24,7 +24,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s01-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s01-configuration.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -48,7 +48,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s02-health-errors.md",
+          "file": "specs/verifications/e01s02-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -60,7 +60,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s02-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s02-health-errors.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -84,7 +84,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s03-routing-auth.md",
+          "file": "specs/verifications/e01s03-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -96,7 +96,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s03-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s03-routing-auth.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -120,7 +120,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s04-streaming.md",
+          "file": "specs/verifications/e01s04-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -132,7 +132,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s04-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s04-streaming.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -150,7 +150,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s05-connect-timeout.md",
+          "file": "specs/verifications/e01s05-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -162,7 +162,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s05-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s05-connect-timeout.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -186,7 +186,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s06-idle-timeout.md",
+          "file": "specs/verifications/e01s06-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -198,7 +198,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s06-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s06-idle-timeout.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -222,7 +222,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s07-cancellation.md",
+          "file": "specs/verifications/e01s07-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -234,7 +234,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s07-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s07-cancellation.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -252,7 +252,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s08-headers.md",
+          "file": "specs/verifications/e01s08-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -264,7 +264,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s08-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s08-headers.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -282,7 +282,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s09-shutdown.md",
+          "file": "specs/verifications/e01s09-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -294,7 +294,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s09-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s09-shutdown.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -318,7 +318,7 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e01-parity-port/e01s10-parity-tests.md",
+          "file": "specs/verifications/e01s10-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -330,7 +330,7 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e01s10-verify.yaml",
+          "file": "specs/epics/archive/e01-parity-port/e01s10-parity-tests.md",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -348,6 +348,12 @@
       "status": "done",
       "links": [
         {
+          "file": "specs/verifications/e02s01-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
           "file": "specs/epics/archive/e02-refactor-hardening/e02s01-refactor-hardening.md",
           "line": 1,
           "confidence": "high",
@@ -355,12 +361,6 @@
         },
         {
           "file": "specs/epics/archive/e02-refactor-hardening/e02s01-tasks.yaml",
-          "line": 1,
-          "confidence": "high",
-          "method": "explicit_tag"
-        },
-        {
-          "file": "specs/verifications/e02s01-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -402,7 +402,13 @@
       "status": "done",
       "links": [
         {
-          "file": "specs/epics/archive/e02-refactor-hardening/e02s02-release-coverage.md",
+          "file": "specs/state.yaml",
+          "line": 37,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e02s02-verify.yaml",
           "line": 1,
           "confidence": "high",
           "method": "explicit_tag"
@@ -414,14 +420,8 @@
           "method": "explicit_tag"
         },
         {
-          "file": "specs/verifications/e02s02-verify.yaml",
+          "file": "specs/epics/archive/e02-refactor-hardening/e02s02-release-coverage.md",
           "line": 1,
-          "confidence": "high",
-          "method": "explicit_tag"
-        },
-        {
-          "file": "specs/state.yaml",
-          "line": 34,
           "confidence": "high",
           "method": "explicit_tag"
         },
@@ -430,9 +430,15 @@
           "line": 104,
           "confidence": "high",
           "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/RELEASE-e02s02-closeout.md",
+          "line": 0,
+          "confidence": "medium",
+          "method": "file_heuristic"
         }
       ],
-      "link_count": 5
+      "link_count": 6
     }
   ],
   "summary": {
@@ -566,7 +572,7 @@
     "stale_count": 12,
     "oracle_stats": {
       "high": 45,
-      "medium": 3,
+      "medium": 4,
       "low": 0
     }
   }
