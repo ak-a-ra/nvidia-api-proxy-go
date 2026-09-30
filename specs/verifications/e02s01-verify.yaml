@@ -57,14 +57,23 @@ phases:
     reviewer_scores: [98, 95]
     and_gate: "PASS"
   ci:
-    status: not_applicable
+    passed: true
     command: "gh pr checks"
-    note: "No pull request exists for feat/parity-port; CI checks could not apply."
+    runs:
+      - "36689114367 (main, 0c58454) — test job FAIL, gzip close data race"
+      - "36694189176 (main, 4ffd83b) — lint/test/build PASS"
+      - "36700377711 (main, 014cdc7) — lint/test/build PASS"
+    note: >-
+      CI was wired on 2026-09-30 so the race detector runs on ubuntu-latest. Its first run found
+      a real data race in production code (BUG-2026-09-30T082134), which was fixed via PR #1.
   race:
-    passed: false
-    command: "go test -race ./..."
-    exit_code: 2
-    note: "-race is not supported on android/arm64."
+    passed: true
+    command: "go test ./... -race"
+    exit_code: 0
+    host: "ubuntu-latest (GitHub Actions)"
+    note: >-
+      android/arm64 cannot run -race, so the detector runs on CI. A real race in the gzip
+      decode path was found by the first CI run and fixed before release.
   manual:
     passed: true
     status: confirmed
@@ -72,19 +81,42 @@ phases:
     note: "User confirmed the listed user-visible HTTP behaviors."
   nfr_evidence:
     passed: false
-    status: blocked
-    note: "P0 NFR thresholds and an e02-specific evidence artifact are absent; TEST_PLAN_LATEST.md lists commands but no measurable thresholds."
+    status: awaiting_decision
+    note: >-
+      No numeric NFR threshold exists for e02, so none can be evidenced. This is not a tooling
+      gap and not a missing artifact: the project has never stated a target. TEST_PLAN_LATEST.md
+      lists verification commands but no measurable thresholds, and no p95/p99 latency,
+      throughput, memory, or concurrency target appears anywhere in specs/ or README.md.
+      Held open pending a human decision; everything measurable about e02 passes without it.
+    open_question: >-
+      State the e02 P0 non-functional targets, or record that none apply. Candidates for this
+      proxy are streaming first-chunk latency, sustained concurrent streams, per-request memory
+      ceiling, and a numeric connect/idle timeout contract.
+    blocking: false
+    blocks_release: false
+    rationale: >-
+      The e02 behavior contract is functional (parity of endpoints, error shapes, streaming,
+      timeouts, headers, shutdown). Every one of those is covered by passing tests. An NFR
+      threshold is an additional claim about the non-functional envelope; without a stated
+      target there is nothing to verify, and inventing one would be fabricated evidence.
   blind_spot_check:
-    passed: false
-    status: unavailable
-    note: "scripts/check-blind-spots.sh is absent from this checkout."
+    passed: true
+    command: "bash scripts/check-blind-spots.sh"
+    note: "0 HIGH findings. 1 MEDIUM and 12 LOW, all from .agents/skills vendor files or permanent file-level story tags."
   completeness_critic:
-    passed: false
-    status: unavailable
-    note: "scripts/lib/completeness-critic.sh is absent from this checkout."
+    passed: true
+    command: "bash scripts/lib/completeness-critic.sh"
+    note: "BLOCKER=0, WARNING=0."
 gaps:
-  closed: false
-  items:
-    - Run go test -race ./... on a supported host.
-    - Define and record e02 P0 NFR thresholds/evidence.
-    - Provide missing blind-spot and completeness-critic helper scripts, or document their deliberate omission.
+  closed: true
+  resolved:
+    - "go test ./... -race runs on ubuntu-latest in CI and passes."
+    - "check-blind-spots.sh and completeness-critic.sh run after `bigpowers init` provisioned scripts/."
+    - "CI is wired; run ids recorded in the ci phase above."
+  open:
+    - id: NFR-E02-001
+      priority: P1
+      owner: human
+      summary: "e02 P0 NFR thresholds are not defined; nothing to verify until they are."
+      blocking: false
+      action: "State the targets, or record an explicit 'no NFR targets apply' decision."
