@@ -78,11 +78,22 @@ Local (`android/arm64`):
 - Business-logic coverage (`config.go`, `proxy.go`, `proxy_headers.go`, `proxy_stream.go`) — **100.0%**, above the 95% gate
 - Conventional commit subjects — PASS; no AI attribution footer — PASS; secret scan — PASS
 
-CI:
+CI — every `push` run on `main`:
 
-- `main` run 36694189176 — lint PASS, test (`go test ./... -race`) PASS, build PASS
-- PR #1 run 36693908686 — all three jobs PASS
-- Regression evidence: run 36689114367 (red, same test) before the fix, both runs green after
+| Run | Commit | Conclusion |
+|---|---|---|
+| 36689114367 | `0c58454` | **FAIL** — `test` job caught the gzip data race |
+| 36694189176 | `4ffd83b` | PASS — lint, test (`-race`), build |
+| 36695587084 | `7e6c669` | PASS — lint, test (`-race`), build |
+| 36697276545 | `5bc2209` (current tip) | PASS — lint, test (`-race`), build |
+
+CI — `pull_request` runs (supporting evidence, not `main` runs):
+
+- 36693908686 — PR #1, all three jobs PASS, the first detector confirmation of the fix
+- 36697025485 — PR #3, all three jobs PASS
+
+The pre-fix run and the current-tip run are the load-bearing pair: the same `test` job that
+reported the race now passes on `main`.
 
 Spec gates:
 
@@ -111,4 +122,5 @@ Spec gates:
 - `specs/verifications/e01s01-verify.yaml` … `e01s09-verify.yaml`
 - `specs/traceability-matrix.json`, `specs/TRACEABILITY_LATEST.md`
 - `specs/state.yaml` (`gate_trace.verdict: PASS`)
-- CI: run 36694189176 (`main`), run 36693908686 (PR #1), run 36689114367 (pre-fix failure)
+- CI: `main` push runs 36689114367 (pre-fix failure), 36694189176, 36695587084, and
+  36697276545 (current tip); PR runs 36693908686 (PR #1) and 36697025485 (PR #3)
