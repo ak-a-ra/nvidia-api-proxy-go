@@ -1,3 +1,4 @@
+// story: e01s07
 package main
 
 import (

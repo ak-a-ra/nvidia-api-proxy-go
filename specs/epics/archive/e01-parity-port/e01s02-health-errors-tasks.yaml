@@ -1,0 +1,17 @@
+story: e01s02
+story_id: e01s02
+title: Serve health and local errors
+status: passing
+bcps: 3
+risk: P1
+security: low
+tasks:
+  - id: 1
+    description: Add the bare HTTP server with exact health, 404, and JSON framing behavior.
+    verify: go test ./... -run 'TestHealth|TestLocalNotFound'
+    status: passing
+    allure:
+      severity: high
+      categories:
+        - health
+        - integration

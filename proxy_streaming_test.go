@@ -1,3 +1,5 @@
+// story: e01s04
+// story: e02s01
 package main
 
 import (

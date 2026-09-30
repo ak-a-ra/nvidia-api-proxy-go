@@ -1,0 +1,50 @@
+story: e01s05
+story_id: e01s05
+title: "Enforce connect timeout"
+verified_at: '2026-09-30T07:52:55Z'
+verifier: verify-work
+branch:
+  passed: true
+  branch: "feat/parity-port"
+  head: "db1732d"
+terminal_verdict:
+  command: "go test -count=1 -run 'TestConnectTimeout|TestLongStreamSurvivesConnectTimeout' ./..."
+  exit_code: 0
+  output: "ok  \tnvidia-api-proxy-go"
+  captured_at: '2026-09-30T07:52:55Z'
+phases:
+  preflight:
+    passed: true
+    command: "go test ./... && go vet ./... && go build ./..."
+  focused:
+    passed: true
+    command: "go test -count=1 -run 'TestConnectTimeout|TestLongStreamSurvivesConnectTimeout' ./..."
+    tests_run: 3
+  tests:
+    passed: true
+    command: "go test ./... -count=1"
+  vet:
+    passed: true
+    command: "go vet ./..."
+  build:
+    passed: true
+    command: "go build ./..."
+  security_review:
+    passed: true
+    artifact: "specs/security/REVIEW.md"
+    note: "No unresolved HIGH finding at confidence 8 or higher in the reviewed diff."
+  manual:
+    status: not_applicable
+    note: "Story behavior is asserted through the public handler boundary by the focused tests below; no separate manual step is required."
+evidence:
+  scope: "The configured connect timeout bounds pre-response upstream work without cutting established streams."
+  implementation: "proxy.go"
+  tests:
+    - TestConnectTimeoutReturnsBadGateway
+    - TestConnectTimeoutCancelsStalledRequestUpload
+    - TestLongStreamSurvivesConnectTimeout
+  authority: "specs/epics/e01-parity-port/e01s05-*.md"
+gaps:
+  closed: true
+  items: []
+note: "Backfilled from the landed e01 implementation and its test suite during the e02s02 release-gate closeout. No implementation code changed."

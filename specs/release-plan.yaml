@@ -9,13 +9,13 @@ epics:
   - id: e01
     title: Behavior-identical Go proxy
     wsjf: 8.0
-    capsule_dir: epics/e01-parity-port
+    capsule_dir: epics/archive/e01-parity-port
     bcps: 30
   - id: e02
     title: Refactor and harden the completed proxy
     wsjf: 7.5
-    capsule_dir: epics/e02-refactor-hardening
-    bcps: 13
+    capsule_dir: epics/archive/e02-refactor-hardening
+    bcps: 18
 bugs:
   total: 0
   fixed: 0
@@ -25,4 +25,5 @@ bugs:
   registry: specs/bugs/registry.yaml
 notes:
   - Story order is the approved port order.
+  - e02s02 is a test-only release coverage story added after the e02s01 release gate exposed measurable coverage shortfalls.
   - One story is one implementation commit unless a test or review artifact requires a separate checkpoint.

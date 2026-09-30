@@ -34,6 +34,15 @@ Reviewed the e02 routing, timeout, compression, header, authentication, and stre
 - Invalid `NVIDIA_BASE_URL` startup errors still echo deployment input for source parity.
 - `go test -race` cannot run on the current Android/arm64 host.
 
+## e02s02 Test-Only Coverage Follow-up
+
+- **Scope:** `coverage_boundary_test.go` and `coverage_stream_boundary_test.go` only; no production code or interface changes.
+- Tests use synthetic `sk-test` and `pt-test` values, local `httptest` handlers, and injected in-process transports. No test contacts an external upstream.
+- Exact 401, 404, and 502 bodies are asserted from literal JSON strings, independent of production payload constants.
+- The gzip timeout is bounded by a channel and a 500 ms test deadline; cleanup closes the stalled body.
+- No credential, request body, internal URL, DNS detail, or other sensitive data is logged by the added tests.
+- No new HIGH finding at confidence 8 or higher was identified.
+
 ## Verdict
 
-No unresolved HIGH finding at confidence 8 or higher in the reviewed diff.
+No unresolved HIGH finding at confidence 8 or higher in the reviewed diff, including the e02s02 test-only follow-up.

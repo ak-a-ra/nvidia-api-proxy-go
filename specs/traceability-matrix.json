@@ -1,0 +1,573 @@
+{
+  "generated_at": "2026-09-30T08:16:05.730434+00:00",
+  "matrix_version": "1.0",
+  "stories": [
+    {
+      "id": "e01s01",
+      "title": "Parse and validate configuration",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s01-configuration.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s01-configuration-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s01-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/plan-work/SKILL.md",
+          "line": 103,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 4
+    },
+    {
+      "id": "e01s02",
+      "title": "Serve health and local errors",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s02-health-errors.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s02-health-errors-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s02-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/audit-code/SKILL.md",
+          "line": 140,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 4
+    },
+    {
+      "id": "e01s03",
+      "title": "Authenticate and route requests",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s03-routing-auth.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s03-routing-auth-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s03-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/guard-git/SKILL.md",
+          "line": 49,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 4
+    },
+    {
+      "id": "e01s04",
+      "title": "Stream upstream bodies",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s04-streaming.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s04-streaming-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s04-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 3
+    },
+    {
+      "id": "e01s05",
+      "title": "Enforce connect timeout",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s05-connect-timeout.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s05-connect-timeout-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s05-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "proxy_connect_timeout_test.go",
+          "line": 0,
+          "confidence": "medium",
+          "method": "file_heuristic"
+        }
+      ],
+      "link_count": 4
+    },
+    {
+      "id": "e01s06",
+      "title": "Enforce idle timeout",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s06-idle-timeout.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s06-idle-timeout-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s06-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "proxy_idle_timeout_test.go",
+          "line": 0,
+          "confidence": "medium",
+          "method": "file_heuristic"
+        }
+      ],
+      "link_count": 4
+    },
+    {
+      "id": "e01s07",
+      "title": "Cancel upstream on client disconnect",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s07-cancellation.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s07-cancellation-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s07-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 3
+    },
+    {
+      "id": "e01s08",
+      "title": "Copy headers without transport leakage",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s08-headers.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s08-headers-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s08-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 3
+    },
+    {
+      "id": "e01s09",
+      "title": "Shut down on SIGTERM",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s09-shutdown.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s09-shutdown-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s09-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "shutdown_test.go",
+          "line": 0,
+          "confidence": "medium",
+          "method": "file_heuristic"
+        }
+      ],
+      "link_count": 4
+    },
+    {
+      "id": "e01s10",
+      "title": "Port and verify all parity tests",
+      "epic_id": "e01",
+      "epic_title": "Behavior-identical Go proxy",
+      "bcp": 0,
+      "wsjf": 8.0,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s10-parity-tests.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e01-parity-port/e01s10-parity-tests-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e01s10-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 3
+    },
+    {
+      "id": "e02s01",
+      "title": "Harden and structure the proxy",
+      "epic_id": "e02",
+      "epic_title": "Refactor and harden the completed proxy",
+      "bcp": 0,
+      "wsjf": 7.5,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e02-refactor-hardening/e02s01-refactor-hardening.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e02-refactor-hardening/e02s01-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e02s01-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/migrate-spec/REFERENCE.md",
+          "line": 441,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/migrate-spec/REFERENCE.md",
+          "line": 447,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/run-evals/SKILL.md",
+          "line": 42,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/verify-work/SKILL.md",
+          "line": 8,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 7
+    },
+    {
+      "id": "e02s02",
+      "title": "Close release coverage gates",
+      "epic_id": "e02",
+      "epic_title": "Refactor and harden the completed proxy",
+      "bcp": 0,
+      "wsjf": 7.5,
+      "status": "done",
+      "links": [
+        {
+          "file": "specs/epics/archive/e02-refactor-hardening/e02s02-release-coverage.md",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/epics/archive/e02-refactor-hardening/e02s02-release-coverage-tasks.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/verifications/e02s02-verify.yaml",
+          "line": 1,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": "specs/state.yaml",
+          "line": 34,
+          "confidence": "high",
+          "method": "explicit_tag"
+        },
+        {
+          "file": ".agents/skills/plan-work/SKILL.md",
+          "line": 104,
+          "confidence": "high",
+          "method": "explicit_tag"
+        }
+      ],
+      "link_count": 5
+    }
+  ],
+  "summary": {
+    "total_stories": 12,
+    "tagged_stories": 12,
+    "dark_stories": [],
+    "dark_count": 0,
+    "orphan_tags": [
+      "e02s03",
+      "e02s04",
+      "e03s01",
+      "e03s02",
+      "e03s03",
+      "e04s01",
+      "e04s02",
+      "e04s03",
+      "e05s02",
+      "e05s03",
+      "e06s01",
+      "e06s02",
+      "e06s03",
+      "e07s01",
+      "e07s02",
+      "e07s03",
+      "e08s01",
+      "e09s01",
+      "e09s04",
+      "e09s05",
+      "e10s01",
+      "e10s02",
+      "e14s01",
+      "e18s01",
+      "e18s05",
+      "e20s01",
+      "e20s02",
+      "e20s03",
+      "e20s04",
+      "e20s05",
+      "e20s06",
+      "e21s01",
+      "e21s02",
+      "e21s04",
+      "e22s02",
+      "e23s02",
+      "e23s03",
+      "e24s01",
+      "e24s02",
+      "e24s03",
+      "e25s01",
+      "e25s02",
+      "e25s03",
+      "e25s04",
+      "e25s05",
+      "e25s06",
+      "e26s01",
+      "e26s02",
+      "e26s03",
+      "e26s04",
+      "e26s05",
+      "e26s06",
+      "e26s07",
+      "e31s07",
+      "e35s10",
+      "e38s02",
+      "e38s05",
+      "e38s06",
+      "e38s07",
+      "e39s07",
+      "e45s01",
+      "e45s02",
+      "e45s04",
+      "e45s05",
+      "e45s06",
+      "e45s07",
+      "e45s08",
+      "e45s09",
+      "e45s11",
+      "e45s12",
+      "e45s13",
+      "e45s14",
+      "e45s15",
+      "e45s17",
+      "e45s18",
+      "e45s19",
+      "e45s21",
+      "e45s23",
+      "e45s26",
+      "e45s27",
+      "e45s28",
+      "e45s29",
+      "e45s30",
+      "e45s31",
+      "e45s32",
+      "e45s33",
+      "e45s34",
+      "e45s35",
+      "e45s37",
+      "e45s38",
+      "e45s39",
+      "e45s40",
+      "e45s41",
+      "e47s02",
+      "e51s02",
+      "e51s03",
+      "e51s04",
+      "e79s02",
+      "e79s03",
+      "e79s04",
+      "e80s01",
+      "e80s02",
+      "e80s03",
+      "e80s04",
+      "e80s05",
+      "e82s02"
+    ],
+    "orphan_count": 106,
+    "stale_tags": [
+      "e01s01",
+      "e01s02",
+      "e01s03",
+      "e01s04",
+      "e01s05",
+      "e01s06",
+      "e01s07",
+      "e01s08",
+      "e01s09",
+      "e01s10",
+      "e02s01",
+      "e02s02"
+    ],
+    "stale_count": 12,
+    "oracle_stats": {
+      "high": 45,
+      "medium": 3,
+      "low": 0
+    }
+  }
+}

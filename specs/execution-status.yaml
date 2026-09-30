@@ -41,7 +41,52 @@ stories:
     started_at: '2026-09-24T14:26:00+07:00'
     completed_at: '2026-09-24T14:30:00+07:00'
   e02s01:
-    status: in_progress
+    status: done
     started_at: '2026-09-25T00:00:00+07:00'
-    completed_at: null
-updated_at: '2026-09-25T00:28:22+07:00'
+    completed_at: '2026-09-25T17:20:41+07:00'
+  e02s02:
+    status: done
+    started_at: '2026-09-25T20:30:12+07:00'
+    completed_at: '2026-09-26T04:58:46+07:00'
+development_status:
+  e01s01: done
+  e01s02: done
+  e01s03: done
+  e01s04: done
+  e01s05: done
+  e01s06: done
+  e01s07: done
+  e01s08: done
+  e01s09: done
+  e01s10: done
+  e02s01: done
+  e02s02: done
+gate_trace:
+  verdict: PASS
+  generated_at: '2026-09-30T08:05:00Z'
+  heuristic_ratio: 0.075
+  downgrade_applied: false
+  rationale: >-
+    All 12 stories are done with 0 dark stories. 37 explicit story tags and 3
+    file-heuristic links resolve to project-owned artifacts (40 usable links);
+    8 further explicit links resolve to .agents/skills vendor files that are
+    gitignored and not project-owned, and are excluded from the ratio. Overall
+    statement coverage is 85.0% (gate 80%) and business-logic coverage is
+    100.0% (gate 95%). Every story has a verification bundle under
+    specs/verifications/. completeness-critic reports 0 BLOCKER.
+  refutation:
+    attempted: true
+    gaps:
+      - "scripts/lib/trace-stories.py scans only *.md/*.sh/*.py/*.js/*.ts/*.yaml/*.yml, so the // story: tags now present in the five production and fourteen test Go files are invisible to the matrix. Story links are therefore spec-level, not code-level."
+      - "Go tags are file-level header comments, so a file shared by several stories attributes to all of them; there is no per-function attribution."
+    resolution: "Neither gap leaves a story without implementation or evidence: every story has named production symbols, named passing tests, and a verification bundle. Recorded as accepted caveats rather than a block."
+  blind_spots:
+    high: 0
+    medium: 1
+    low: 12
+    note: "The single MEDIUM (double-tag) and the 12 LOW stale-tag findings all come from .agents/skills vendor files or from intentionally permanent file-level story tags on completed stories, which AGENTS.md requires for traceability."
+  inputs:
+    - specs/traceability-matrix.json
+    - specs/blind-spots.json
+    - specs/verifications/
+updated_at: '2026-09-30T08:05:00Z'

@@ -1,0 +1,57 @@
+story: e01s08
+story_id: e01s08
+title: "Copy headers without transport leakage"
+verified_at: '2026-09-30T07:52:55Z'
+verifier: verify-work
+branch:
+  passed: true
+  branch: "feat/parity-port"
+  head: "db1732d"
+terminal_verdict:
+  command: "go test -count=1 -run 'TestProxyCopiesHeadersAndPreservesResponseCookies|TestProxyHeadersStripConnectionNominatedFields|TestHeadPreservesContentLength|TestNoContentUpstreamPassesThrough|TestResetContentDropsStaleContentLength|TestUnsupportedUpstreamEncodingPassesThrough|TestContentLengthPassesThrough|TestBodylessGzipResponseKeepsStatus|TestInvalidUpstreamContentLengthIsDropped|TestGzipRequestBodyReachesUpstreamUnchanged' ./..."
+  exit_code: 0
+  output: "ok  \tnvidia-api-proxy-go"
+  captured_at: '2026-09-30T07:52:55Z'
+phases:
+  preflight:
+    passed: true
+    command: "go test ./... && go vet ./... && go build ./..."
+  focused:
+    passed: true
+    command: "go test -count=1 -run 'TestProxyCopiesHeadersAndPreservesResponseCookies|TestProxyHeadersStripConnectionNominatedFields|TestHeadPreservesContentLength|TestNoContentUpstreamPassesThrough|TestResetContentDropsStaleContentLength|TestUnsupportedUpstreamEncodingPassesThrough|TestContentLengthPassesThrough|TestBodylessGzipResponseKeepsStatus|TestInvalidUpstreamContentLengthIsDropped|TestGzipRequestBodyReachesUpstreamUnchanged' ./..."
+    tests_run: 10
+  tests:
+    passed: true
+    command: "go test ./... -count=1"
+  vet:
+    passed: true
+    command: "go vet ./..."
+  build:
+    passed: true
+    command: "go build ./..."
+  security_review:
+    passed: true
+    artifact: "specs/security/REVIEW.md"
+    note: "No unresolved HIGH finding at confidence 8 or higher in the reviewed diff."
+  manual:
+    status: not_applicable
+    note: "Story behavior is asserted through the public handler boundary by the focused tests below; no separate manual step is required."
+evidence:
+  scope: "Hop-by-hop headers are stripped in both directions while cookies, encodings, and bodyless framing survive."
+  implementation: "proxy_headers.go"
+  tests:
+    - TestProxyCopiesHeadersAndPreservesResponseCookies
+    - TestProxyHeadersStripConnectionNominatedFields
+    - TestHeadPreservesContentLength
+    - TestNoContentUpstreamPassesThrough
+    - TestResetContentDropsStaleContentLength
+    - TestUnsupportedUpstreamEncodingPassesThrough
+    - TestContentLengthPassesThrough
+    - TestBodylessGzipResponseKeepsStatus
+    - TestInvalidUpstreamContentLengthIsDropped
+    - TestGzipRequestBodyReachesUpstreamUnchanged
+  authority: "specs/epics/e01-parity-port/e01s08-*.md"
+gaps:
+  closed: true
+  items: []
+note: "Backfilled from the landed e01 implementation and its test suite during the e02s02 release-gate closeout. No implementation code changed."

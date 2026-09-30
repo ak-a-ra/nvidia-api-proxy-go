@@ -9,3 +9,6 @@ GEMINI.md
 /RTK.md
 /dist/
 /nvidia-api-proxy-go
+
+# bigpowers tooling: provisioned per checkout by `bigpowers init`
+/scripts

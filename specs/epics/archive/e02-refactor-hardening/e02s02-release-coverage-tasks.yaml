@@ -1,0 +1,40 @@
+story: e02s02
+story_id: e02s02
+title: Close release coverage gates
+status: passing
+bcps: 5
+risk: P1
+security: none
+tasks:
+  - id: 1
+    description: Add public-boundary tests for invalid port parsing, URL/request construction failures, root-path normalization, and authentication edges.
+    verify: "go test -count=1 -run 'TestCoverageConfig|TestCoverageRouting|TestCoverageAuthorization' ./..."
+    risk: P1
+    status: passing
+    allure:
+      severity: high
+      categories:
+        - release gate
+        - configuration
+        - routing
+  - id: 2
+    description: Add deterministic response-preparation and stream-boundary tests for malformed gzip, invalid framing, and writer failures.
+    verify: "go test -count=1 -run 'TestCoverageResponse|TestCoverageStream' ./..."
+    risk: P1
+    status: passing
+    allure:
+      severity: high
+      categories:
+        - release gate
+        - streaming
+        - response framing
+  - id: 3
+    description: Run repeated coverage and the complete release mechanical stack; record the overall and business-logic coverage evidence.
+    verify: "go test -count=1 -coverprofile=\"$TMPDIR/nvidia-api-proxy-go-e02s02.cover\" ./... && go tool cover -func=\"$TMPDIR/nvidia-api-proxy-go-e02s02.cover\" && go test -count=1 ./... && go vet ./... && go build ./..."
+    risk: P1
+    status: passing
+    allure:
+      severity: high
+      categories:
+        - release gate
+        - quality

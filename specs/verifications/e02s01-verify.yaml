@@ -1,17 +1,27 @@
+story: e02s01
 story_id: e02s01
-verified_at: "2026-09-25T05:35:30+07:00"
-verifier: opencode
+verified_at: "2026-09-25T17:20:41+07:00"
+verifier: verify-work
 terminal_verdict:
   command: "go test ./... && go vet ./... && go build ./..."
   exit_code: 0
-  captured_at: "2026-09-25T05:35:30+07:00"
+  captured_at: "2026-09-25T16:32:41+07:00"
 phases:
+  branch:
+    passed: true
+    branch: "feat/parity-port"
+  preflight:
+    passed: true
+    command: "go test ./... && go vet ./... && go build ./..."
   focused_regressions:
     passed: true
-    command: "go test -run 'TestInvalidUpstreamContentLengthIsDropped|TestCopyStreamingRejectsShortWrites|TestProxyRouting|TestProxyHeaders|TestConnectTimeout|TestIdleTimeout|TestUnsupportedUpstreamEncoding' ./..."
+    command: "go test -count=1 -run 'TestInvalidUpstreamContentLengthIsDropped|TestCopyStreamingRejectsShortWrites|TestProxyRouting|TestProxyHeaders|TestConnectTimeout|TestIdleTimeout|TestUnsupportedUpstreamEncoding' ./..."
   repeatability:
     passed: true
     command: "go test -count=3 ./..."
+  shuffled_suite:
+    passed: true
+    command: "go test -count=1 -shuffle=on ./..."
   tests:
     passed: true
     command: "go test ./..."
@@ -21,15 +31,60 @@ phases:
   build:
     passed: true
     command: "go build ./..."
+  agent_http_smoke:
+    passed: true
+    command: "Temporary local synthetic-upstream HTTP smoke via curl"
+    captured_at: "2026-09-25T16:32:41+07:00"
+    coverage:
+      - Configured /health response
+      - Missing bearer authentication returns exact 401 response
+      - Bare /v1 and unknown paths return exact 404 response
+      - Literal and encoded dot segments do not reach upstream
+      - Path, raw query, authorization, and Accept-Encoding forwarding
+      - Unsupported Content-Encoding and original bytes preservation
+      - Streaming delivery of multiple chunks
+      - Safe 502 response after pre-response timeout
+  security_review:
+    passed: true
+    artifact: "specs/security/REVIEW.md"
+    note: "Existing e02 review reports no unresolved HIGH finding at confidence 8 or higher."
+  audit:
+    passed: true
+    artifact: "specs/verifications/AUDIT-e02-e02s01.md"
+  independent_review:
+    passed: true
+    artifact: "specs/verifications/REVIEW-e02s01.md"
+    reviewer_scores: [98, 95]
+    and_gate: "PASS"
+  ci:
+    status: not_applicable
+    command: "gh pr checks"
+    note: "No pull request exists for feat/parity-port; CI checks could not apply."
   race:
     passed: false
     command: "go test -race ./..."
-    note: "Unsupported on the current Android/arm64 host: -race is not supported on android/arm64."
+    exit_code: 2
+    note: "-race is not supported on android/arm64."
   manual:
+    passed: true
+    status: confirmed
+    confirmed_at: "2026-09-25T16:40:39+07:00"
+    note: "User confirmed the listed user-visible HTTP behaviors."
+  nfr_evidence:
     passed: false
-    note: "User UAT is pending."
+    status: blocked
+    note: "P0 NFR thresholds and an e02-specific evidence artifact are absent; TEST_PLAN_LATEST.md lists commands but no measurable thresholds."
+  blind_spot_check:
+    passed: false
+    status: unavailable
+    note: "scripts/check-blind-spots.sh is absent from this checkout."
+  completeness_critic:
+    passed: false
+    status: unavailable
+    note: "scripts/lib/completeness-critic.sh is absent from this checkout."
 gaps:
   closed: false
   items:
-    - Confirm user-visible behavior manually.
-    - Run race detection on a supported host.
+    - Run go test -race ./... on a supported host.
+    - Define and record e02 P0 NFR thresholds/evidence.
+    - Provide missing blind-spot and completeness-critic helper scripts, or document their deliberate omission.
