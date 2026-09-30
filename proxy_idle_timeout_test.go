@@ -178,3 +178,61 @@ func TestIdleTimeoutResetsOnChunks(t *testing.T) {
 		t.Fatalf("body = %q", body)
 	}
 }
+
+// TestIdleTimeoutGzipCloseOverlapsInFlightRead re-runs the gzip idle-close
+// overlap many times. BUG-2026-09-30T082134 was a data race between the gzip
+// reader's Close (idle-timer goroutine) and an in-flight Read (request
+// goroutine). This host cannot run -race, so the loop exists to give the CI
+// race detector many samples; without -race it still asserts the timeout ends
+// the stream and closes the transport body in every repetition.
+func TestIdleTimeoutGzipCloseOverlapsInFlightRead(t *testing.T) {
+	const repetitions = 20
+
+	for iteration := 0; iteration < repetitions; iteration++ {
+		var compressed bytes.Buffer
+		encoder := gzip.NewWriter(&compressed)
+		if _, err := encoder.Write([]byte("part1")); err != nil {
+			t.Fatal(err)
+		}
+		if err := encoder.Close(); err != nil {
+			t.Fatal(err)
+		}
+
+		upstreamBody := &stalledReadCloser{
+			reader: bytes.NewReader(compressed.Bytes()),
+			closed: make(chan struct{}),
+		}
+		client := &http.Client{Transport: roundTripFunc(func(*http.Request) (*http.Response, error) {
+			return &http.Response{
+				StatusCode: http.StatusOK,
+				Header:     http.Header{"Content-Encoding": []string{"gzip"}},
+				Body:       upstreamBody,
+			}, nil
+		})}
+		request := httptest.NewRequest(http.MethodGet, "/v1/models", nil)
+		request.Header.Set("Authorization", "Bearer pt-test")
+		response := httptest.NewRecorder()
+		done := make(chan struct{})
+		go func() {
+			defer close(done)
+			defer func() { _ = recover() }()
+			newHandler(Config{
+				APIKey:         "sk-test",
+				ProxyToken:     "pt-test",
+				UpstreamOrigin: "http://upstream",
+				IdleTimeout:    20 * time.Millisecond,
+			}, client).ServeHTTP(response, request)
+		}()
+
+		select {
+		case <-done:
+		case <-time.After(2 * time.Second):
+			t.Fatalf("iteration %d: gzip idle close did not return", iteration)
+		}
+		select {
+		case <-upstreamBody.closed:
+		default:
+			t.Fatalf("iteration %d: idle timeout did not close the transport body", iteration)
+		}
+	}
+}

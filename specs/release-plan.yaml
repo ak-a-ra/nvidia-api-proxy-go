@@ -17,8 +17,8 @@ epics:
     capsule_dir: epics/archive/e02-refactor-hardening
     bcps: 18
 bugs:
-  total: 0
-  fixed: 0
+  total: 1
+  fixed: 1
   deferred: 0
   wontfix: 0
   open: 0

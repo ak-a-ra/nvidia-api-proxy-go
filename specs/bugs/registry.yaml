@@ -1,2 +1,9 @@
 schema_version: 1
-bugs: []
+bugs:
+  - bug_id: BUG-2026-09-30T082134
+    date: 2026-09-30
+    severity: medium
+    priority: high
+    scope: proxy-stream
+    summary: gzip decoding body close raced with an in-flight read on the flate decompressor error field; CI -race failed.
+    file: specs/bugs/BUG-2026-09-30T082134-gzip-close-race.md

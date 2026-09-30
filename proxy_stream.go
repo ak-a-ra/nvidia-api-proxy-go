@@ -27,6 +27,15 @@ type preparedResponseBody struct {
 	dropEncoding bool
 }
 
+// decodedResponseBody streams a gzip-decoded upstream body.
+//
+// Close deliberately does not call the gzip reader's Close. That method is not
+// a resource release: it forwards to the flate decompressor's Close, which
+// reads the decompressor's sticky error field. A concurrent Read writes that
+// same field, so calling it from the idle-timer goroutine while the request
+// goroutine is blocked in Read is a data race (BUG-2026-09-30T082134). The
+// reader holds no resource of its own either: closing the source is what
+// releases the connection and unblocks an in-flight Read.
 type decodedResponseBody struct {
 	reader *gzip.Reader
 	source io.ReadCloser
@@ -39,7 +48,6 @@ func (body *decodedResponseBody) Read(buffer []byte) (int, error) {
 
 func (body *decodedResponseBody) Close() error {
 	body.once.Do(func() {
-		_ = body.reader.Close()
 		_ = body.source.Close()
 	})
 	return nil
