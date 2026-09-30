@@ -1,0 +1,175 @@
+schema_version: 1
+status: ratified
+project: nvidia-api-proxy-go
+ratified_at: "2026-09-30"
+ratified_by: human
+supersedes: >-
+  The open item NFR-E02-001 in specs/verifications/e02s01-verify.yaml, which recorded that no
+  numeric non-functional target had ever been stated. This file states them.
+
+purpose: >-
+  The e02 P0 non-functional envelope for the proxy. Each target is a threshold that a test in
+  nfr_test.go enforces on every run, so a regression fails the suite rather than going unnoticed.
+  Thresholds were chosen after measuring this implementation, then set far enough above the
+  observed value that normal host variance cannot produce a false failure while a real
+  architectural regression still trips them.
+
+scope: >-
+  Streaming proxy paths: response body copy, first-chunk delivery, concurrent stream handling,
+  and the connect/idle timeout contract. This proxy has no database, no queue, no cache, and no
+  auth backend, so latency-per-request, throughput-per-second, and durability targets that would
+  apply to a service with state are intentionally absent rather than unset.
+
+measured_on: >-
+  android/arm64, go1.27.1, 8 cores. This host cannot run the Go race detector; CI runs
+  `go test ./... -race` on ubuntu-latest and is the race evidence. Byte and concurrency figures
+  from this host are used only to size thresholds, never as race evidence.
+
+targets:
+  - id: NFR-E02-1
+    title: Streaming allocation is constant in body size
+    statement: >-
+      Copying and forwarding a response body must allocate a bounded, constant amount of memory
+      regardless of body size. A 32 MiB body must not allocate commensurately with its size.
+    threshold:
+      value: 512
+      unit: KiB
+      comparison: less_than
+      measured_body: 32 MiB
+    test: TestNFRStreamingAllocationIsConstantInBodySize
+    secondary_tests:
+      - TestNFRStreamingGzipDecodeDoesNotBufferBody
+    measured:
+      copy_streaming_32mib_bytes: "936 to 33856 across 4 runs"
+      copy_streaming_4mib_bytes: "952 to 33856 across 4 runs"
+      handler_path_32mib_bytes: 3760
+      gzip_decoded_16805_bytes: "47008 to 79800 across 3 runs"
+      allocs_per_run_over_pooled_path: 3
+      note: >-
+        The two values per row are a sync.Pool miss (the 32 KiB buffer is allocated, about
+        33856 bytes) and a pool hit (about 1 KiB). Which one a run reports depends on whether
+        the pool still holds the buffer from the warm-up copy, so the figure is reported as a
+        range rather than a single sample. What matters for this target is that all four
+        observed values sit at least 6x below the ceiling and none of them scales with body
+        size: a 32 MiB body allocated no more than a 4 MiB body. AllocsPerRun over the pooled
+        path reports 3, not 0, so the byte ceiling is the enforced bound; the count is recorded
+        rather than asserted, because pinning it would fail on unrelated runtime changes.
+    rationale: >-
+      This is the target that makes "streaming" a measurable claim rather than an adjective. If
+      someone replaced the pooled copy with io.ReadAll, the delta would jump to roughly the body
+      size and this test would fail at 32 MiB, which is the intended outcome.
+    scope: >-
+      Applies to gzip-decoded responses as well, because the decode path must not buffer either.
+
+  - id: NFR-E02-2
+    title: The first chunk is never held until the stream ends
+    statement: >-
+      When the upstream flushes a chunk and then goes silent, that chunk must reach the client
+      while the upstream is still open, for a single stream and for 32 concurrent streams.
+    threshold:
+      value: 500
+      unit: ms
+      comparison: less_than
+      applies_to: worst first-chunk latency across 32 concurrent gated streams
+    test: TestNFRStreamingFirstChunkNotBufferedUnderLoad
+    measured:
+      concurrent_streams: 32
+      worst_first_chunk_latency_ms: 10.1
+      failures: 0
+    rationale: >-
+      The load-bearing assertion is structural, not the millisecond ceiling: the upstream handler
+      flushes one chunk and then blocks on a channel that the test only closes after every client
+      has read its chunk. A buffering implementation cannot pass that regardless of the clock,
+      because it would deadlock. The 500 ms ceiling exists to catch a pathological scheduler
+      delay, not to define buffering.
+    scope: >-
+      Server-sent events and any other chunked response. The e01 streaming test asserts the same
+      invariant for a single stream; this target extends it to concurrent load.
+
+  - id: NFR-E02-3
+    title: Sustained concurrent streaming requests complete intact
+    statement: >-
+      256 concurrent streaming requests must all complete with 0 failures and byte-exact bodies.
+    threshold:
+      value: 10
+      unit: s
+      comparison: less_than
+      applies_to: wall time for the full 256-request batch
+    test: TestNFRStreamingHandlesTwoHundredFiftySixConcurrentRequests
+    measured:
+      concurrent_requests: 256
+      failures: 0
+      elapsed_ms_latest: 217.2
+      elapsed_ms_best: 49.8
+      reference_512_concurrent_ms: 169
+    rationale: >-
+      The failure count and body integrity are the real assertions; the wall-clock ceiling is set
+      roughly 50x above the observed time so it cannot flake on a loaded CI runner, while still
+      catching a leak or a serialization regression that turned 0.2 s into 10 s. Go's net/http
+      serves each connection on its own goroutine, so the expected profile is flat.
+    scope: >-
+      In-memory synthetic upstreams only. Real upstream latency is NVIDIA's to bound, and the
+      proxy's job is to add no serialization of its own.
+
+  - id: NFR-E02-4
+    title: The timeout contract is numeric
+    statement: >-
+      Connect timeout defaults to 30 s and bounds the whole pre-response phase (DNS, connect,
+      request upload, response headers). Idle timeout defaults to 120 s and bounds the gap between
+      received bytes, resetting on every chunk. Setting either to 0 disables that bound.
+    threshold:
+      connect_default: 30
+      idle_default: 120
+      unit: s
+      comparison: >-
+        a configured connect timeout of T yields the fixed 502 at T or later and before T + 1 s;
+        a configured idle timeout of T ends a stalled stream within T + 500 ms
+    test: TestNFRConnectTimeoutHonorsConfiguredBound
+    secondary_tests:
+      - TestNFRIdleTimeoutBoundsStallsWithoutCuttingActiveStreams
+      - TestNFRTimeoutDefaultsAreNumeric
+    measured:
+      connect_timeout_configured_ms: 200
+      observed_502_after_ms: 205.7
+      idle_timeout_configured_ms: 150
+      observed_stall_cutoff_ms: 210
+      chunk_reset_pace_ms: 75
+      chunk_reset_stream_completed: true
+      zero_disables_idle_verified: true
+      zero_disables_connect_verified: true
+    rationale: >-
+      Both numbers were previously only expressed as defaults in code, with the lower bound
+      untested: a proxy that returned 502 immediately on any request would have satisfied every
+      existing timeout test. The lower bound is what makes "honors the configured timeout" a
+      claim, and the chunk-reset case is what distinguishes a per-chunk idle bound from a single
+      read deadline, which CONVENTIONS.md forbids.
+    scope: >-
+      Applies to the configured values, not just the defaults, and to the disabled case. The
+      original server.js documents the same semantics, so this is recorded contract, not new
+      behavior.
+
+out_of_scope:
+  - item: Latency percentiles (p50/p95/p99) against the real upstream
+    reason: >-
+      Upstream latency is NVIDIA's to bound and varies by model and region. Any number asserted
+      here would measure the network, not this proxy.
+  - item: Requests or tokens per second
+    reason: >-
+      The proxy adds no queue and no rate limit by design; throughput is bounded by the upstream
+      and by the deploy plan, not by code in this repository.
+  - item: Memory ceiling for the whole process under production traffic
+    reason: >-
+      Per-request allocation is bounded by NFR-E02-1, which is the part this code controls. Total
+      resident memory depends on the Render plan size and the number of live streams.
+  - item: Durability, availability, and error budget
+    reason: The service is a stateless pass-through with no storage.
+
+evidence:
+  - nfr_test.go
+  - specs/tech-architecture/TEST_PLAN_LATEST.md
+  - specs/verifications/e02s01-verify.yaml
+
+references:
+  - specs/tech-architecture/TEST_PLAN_LATEST.md
+  - specs/product/SCOPE_LATEST.yaml
+  - CONVENTIONS.md

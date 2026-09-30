@@ -1,26 +1,24 @@
 schema_version: 1
 workflow_mode: solo-git
+active_flow: release_branch
 session:
   project: nvidia-api-proxy-go
-  active_flow: release_branch
   started_at: '2026-09-24T14:08:26+07:00'
   handoff:
     last_step_completed: e02s02 closeout — solo-local land to main, CI race fix, release evidence recorded
     open_decisions:
       - >-
-        E02 P0 NFR thresholds are undefined, so no NFR can be evidenced. Human decision needed:
-        state the targets (streaming first-chunk latency, sustained concurrent streams,
-        per-request memory ceiling, numeric timeout contract) or record that none apply.
-        Tracked as NFR-E02-001 in specs/verifications/e02s01-verify.yaml; not release-blocking.
-      - scripts/sync-skills.sh fails in this checkout because package.json is absent; land-branch.sh must run with --skip-verify and the gate chain run explicitly.
+        scripts/sync-skills.sh fails in this checkout because package.json is absent; land-branch.sh must run with --skip-verify and the gate chain run explicitly.
       - The race detector runs only on CI; streaming, timeout, and shutdown changes need a green CI run as evidence.
     resolved:
+      - >-
+        E02 P0 NFR thresholds were undefined; resolved by human decision on 2026-09-30 to state numeric targets. Targets recorded in specs/tech-architecture/NFR_LATEST.yaml and enforced by tests in nfr_test.go. NFR-E02-001 closed.
       - >-
         e02s01-verify.yaml was left stale after the closeout (race/CI/blind-spot/critic still
         read blocked or unavailable). Corrected alongside e02s02: only the NFR item remains open.
       - Go race detection now runs on ubuntu-latest in .github/workflows/test-build-release.yml; CI run 36694189176 is green on main.
       - scripts/ is provisioned by `bigpowers init`; land-branch.sh, check-blind-spots.sh, trace-stories.sh, and completeness-critic.sh all run.
-      - Solo-local integration completed: feat/parity-port squash-landed as 0c58454, race fix landed as 4ffd83b via PR #1.
+      - "Solo-local integration completed: feat/parity-port squash-landed as 0c58454, race fix landed as 4ffd83b via PR #1."
     required_reading:
       - CONVENTIONS.md
       - specs/tech-architecture/IMPACT-e02-e02s02.md
