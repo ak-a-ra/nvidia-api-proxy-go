@@ -73,27 +73,41 @@ phases:
     command: "gh pr checks"
     note: "No pull request exists for feat/parity-port, so no CI check applies."
   race:
-    passed: false
-    command: "go test -race ./..."
-    exit_code: 2
-    note: "-race is not supported on android/arm64; rerun on a supported host before release."
+    passed: true
+    command: "go test ./... -race"
+    exit_code: 0
+    host: "ubuntu-latest (GitHub Actions)"
+    runs:
+      - "36694189176 (main, post-fix) — test job PASS"
+      - "36693908686 (PR #1) — test job PASS"
+      - "36689114367 (main, pre-fix) — test job FAIL, data race in gzip close"
+    note: >-
+      android/arm64 cannot run -race, so the detector runs in CI. Its first run found a real
+      data race in production code (BUG-2026-09-30T082134-gzip-close-race.md), which was fixed
+      and re-verified green before the release gate was declared passed.
   blind_spot_check:
-    passed: false
-    status: unavailable
-    note: "scripts/check-blind-spots.sh is absent from this checkout."
+    passed: true
+    command: "bash scripts/check-blind-spots.sh"
+    note: "0 HIGH findings. 1 MEDIUM and 12 LOW, all from .agents/skills vendor files or permanent file-level story tags."
   completeness_critic:
-    passed: false
-    status: unavailable
-    note: "scripts/lib/completeness-critic.sh is absent from this checkout."
+    passed: true
+    command: "bash scripts/lib/completeness-critic.sh"
+    note: "BLOCKER=0, WARNING=0. 12 verification bundles on disk."
   traceability:
-    status: unavailable
-    note: "scripts/trace-stories.sh and specs/TRACEABILITY_LATEST.md are absent; story-to-test traceability is recorded in the story and task artifacts."
+    passed: true
+    command: "bash scripts/trace-stories.sh && bash scripts/run-gate-trace-verify.sh"
+    note: "12 stories, 0 dark, 45 explicit links. Matrix at specs/traceability-matrix.json; verdict PASS in specs/execution-status.yaml."
+  status_consistency:
+    passed: true
+    command: "bash scripts/golden-g12-status-consistency.sh"
 gaps:
   closed: true
-  items:
-    - Run go test -race ./... on a supported host.
-    - Run the missing blind-spot, completeness-critic, and traceability helper scripts when the repository tooling is restored.
-    - Provide a landing script or open a pull request before any release integration.
+  items: []
+  resolved:
+    - "go test ./... -race runs on ubuntu-latest in CI and passes."
+    - "check-blind-spots.sh, completeness-critic.sh, and trace-stories.sh run after `bigpowers init` provisioned scripts/."
+    - "scripts/land-branch.sh landed feat/parity-port as 0c58454."
 release_gate:
-  status: blocked_external_prerequisites
-  reason: "Coverage, tests, vet, build, audit, security, and independent review pass; race detection, CI, and solo-local landing prerequisites are unavailable in this checkout/host."
+  status: passed
+  reason: "All gates pass with the race detector running on CI. One blocking CI race was found and fixed before release."
+  evidence: specs/verifications/RELEASE-e02s02-closeout.md

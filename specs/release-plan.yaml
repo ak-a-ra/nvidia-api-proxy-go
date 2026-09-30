@@ -2,7 +2,7 @@ schema_version: 1
 release:
   version: null
   codename: parity-port
-  status: in_progress
+  status: landed
   semantic_release: true
   bump_hint: patch
 epics:
